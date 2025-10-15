@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online Excel to image converter, supports xlsx, xls formats">
+    <meta name="keywords" content="Excel to image,table to image,xlsx to png,online converter,free tool">
+    <meta name="author" content="Excel to Image Tool">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:title" content="Excel to Image Converter - Free Online Tool">
+    <meta property="og:description" content="Quickly convert Excel spreadsheets to high-quality images">
+    <meta property="og:type" content="website">
+    
+    <link rel="canonical" href="https://yourdomain.com/">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHTSURBVFhH7ZbPK0RRFMfPMBhjJhYWFhaSlJKysLGwsLCw8A/IP2BhY2Fh4R+wsLGRhZWysLCwkCwsJOQnGWPmznfunXfu3Hfee+/N8FZ96tS5555zvvd37rn3jqIoiqIoiqIoiqL8A1RXA2NjwOwssLQE7O0BR0fA+TlwdQVcXwO3t8DdHXB/Dzw8AI+PwNMT8PwMvLwAr6/A2xvw/g58fACfn8DXF/D9Dfz8AL+/wN8f8P8vGBkBhoaAwUGgvx/o6wN6e4GeHqC7G+jqAjo7gY4OoL0daGsD2tqA1lagpQVobgaamoDGRqChAairA2prgZoaoLoaqKoCKiuBigqgvBwoKwNKS4GSEqC4GCgqAgr/RhQUAPn5QF4ekJsL5OQAWVVAVRVQVQVUVQFVVUB1NVBdDdTUALW1QF0dUF8PNDQAjY1AUxPQ3Aw0NwMtLUBrK9DWBrS3Ax0dQGcn0NUFdHcDPT1Aby/Q1wf09wMDA8DgIDA0BAwPA6OjwNgYMD4OTExQEwgTExgcBIaHgZERYHQUGBsDxseBiQlgchKYmgKmp4GZGWBuDpifBxYWgMVFYGkJWF4GVlaA1VVgbQ1YXwc2NoDNTWBrC9jeBnZ2gN1dYG8P2N8HDg6AwwsLFEVRFEVRFEVRFCVrKH8BL1UAAAAASUVORK5CYII=">
+    
+    <title>Excel to Image Converter - Free Online Tool</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        .spinner { border: 3px solid #e5e7eb; border-top-color: #4f46e5; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .upload-zone:hover { transform: translateY(-2px); transition: all 0.3s ease; }
+        .lang-select { min-width: 180px; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <h1 class="text-xl font-bold text-gray-800" data-i18n="app_title">Excel to Image Converter</h1>
+            </div>
+            <div class="flex gap-4 items-center">
+                <select id="languageSelect" class="lang-select px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent cursor-pointer text-sm">
+                    <option value="en">🇬🇧 English</option>
+                    <option value="zh-CN">🇨🇳 中文简体</option>
+                    <option value="zh-TW">🇹🇼 中文繁體</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                    <option value="ko">🇰🇷 한국어</option>
+                    <option value="pt">🇵🇹 Português</option>
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="ar">🇸🇦 العربية</option>
+                    <option value="hi">🇮🇳 हिन्दी</option>
+                    <option value="it">🇮🇹 Italiano</option>
+                    <option value="nl">🇳🇱 Nederlands</option>
+                </select>
+                <button onclick="window.open('https://github.com/Harries/exceltoimage', '_blank')" class="text-gray-600 hover:text-gray-800 text-sm">GitHub</button>
+                <button onclick="shareToSocial()" class="text-gray-600 hover:text-gray-800 text-sm" data-i18n="share">Share</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        
+        <section class="text-center mb-12">
+            <h2 class="text-5xl font-extrabold text-gray-900 mb-4" data-i18n="hero_title">Convert Excel to Image Instantly</h2>
+            <p class="text-xl text-gray-600 mb-2" data-i18n="hero_subtitle">Supports .xlsx and .xls formats | Preserves merged cells | Privacy-first processing</p>
+            <p class="text-sm text-gray-500"><span data-i18n="user_count_text">Served</span> <span id="userCount">12,847</span> <span data-i18n="user_count_suffix">users</span></p>
+        </section>
+
+        <div class="bg-white rounded-2xl shadow-2xl p-8 mb-8">
+            <div class="flex flex-col items-center gap-6">
+                
+                <label for="fileInput" class="w-full max-w-2xl cursor-pointer">
+                    <div class="upload-zone border-2 border-dashed border-indigo-300 rounded-2xl p-12 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-500 transition-all">
+                        <div class="flex flex-col items-center gap-4">
+                            <svg class="w-20 h-20 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-gray-700 mb-2" data-i18n="upload_text">Drag & drop file here or click to upload</p>
+                                <p class="text-gray-500" data-i18n="upload_subtitle">Supports .xlsx and .xls formats, max 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls" class="hidden" onchange="handleFileUpload(event)">
+                </label>
+
+                <div id="errorMsg" class="hidden w-full max-w-2xl bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+                    <svg class="w-6 h-6 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p class="text-red-700" id="errorText"></p>
+                </div>
+
+                <div id="processingMsg" class="hidden flex items-center gap-3 text-indigo-600 text-lg font-medium">
+                    <div class="spinner"></div>
+                    <span id="processingText">Processing...</span>
+                </div>
+
+                <button id="downloadBtn" onclick="downloadAsImage()" class="hidden flex items-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-xl hover:shadow-2xl transform hover:scale-105">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span data-i18n="download_btn">Download as HD Image</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="previewSection" class="hidden bg-white rounded-2xl shadow-2xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3 text-gray-700">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span class="font-bold text-lg"><span data-i18n="preview">Preview</span>: <span id="fileName"></span></span>
+                </div>
+                <button onclick="resetUpload()" class="text-gray-500 hover:text-gray-700 text-sm font-medium" data-i18n="reset">Upload New</button>
+            </div>
+            
+            <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                <div id="tableContainer"></div>
+            </div>
+        </div>
+
+        <section class="mt-16 grid md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2" data-i18n="feature1_title">Lightning Fast</h3>
+                <p class="text-gray-600" data-i18n="feature1_desc">Built with modern web technology, average conversion time under 3 seconds</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2" data-i18n="feature2_title">Privacy Protected</h3>
+                <p class="text-gray-600" data-i18n="feature2_desc">All processing happens locally in your browser, files never leave your device</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2" data-i18n="feature3_title">Perfect Rendering</h3>
+                <p class="text-gray-600" data-i18n="feature3_desc">Supports merged cells, 2x HD output, perfectly preserves Excel formatting</p>
+            </div>
+        </section>
+
+        <section class="mt-16 bg-white rounded-2xl shadow-xl p-8">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center" data-i18n="faq_title">Frequently Asked Questions</h3>
+            <div class="space-y-4">
+                <details class="group border-b border-gray-200 pb-4">
+                    <summary class="font-semibold text-gray-700 cursor-pointer list-none flex items-center justify-between">
+                        <span data-i18n="faq1_q">What Excel formats are supported?</span>
+                        <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </summary>
+                    <p class="text-gray-600 mt-2" data-i18n="faq1_a">We support both .xlsx and .xls formats, covering Excel 2007 and all later versions</p>
+                </details>
+                
+                <details class="group border-b border-gray-200 pb-4">
+                    <summary class="font-semibold text-gray-700 cursor-pointer list-none flex items-center justify-between">
+                        <span data-i18n="faq2_q">Are files uploaded to a server?</span>
+                        <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </summary>
+                    <p class="text-gray-600 mt-2" data-i18n="faq2_a">No! All processing happens in your browser locally, files never leave your device</p>
+                </details>
+                
+                <details class="group border-b border-gray-200 pb-4">
+                    <summary class="font-semibold text-gray-700 cursor-pointer list-none flex items-center justify-between">
+                        <span data-i18n="faq3_q">What image format is generated?</span>
+                        <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </summary>
+                    <p class="text-gray-600 mt-2" data-i18n="faq3_a">PNG format with 2x resolution output, ensuring crisp and clear images</p>
+                </details>
+                
+                <details class="group">
+                    <summary class="font-semibold text-gray-700 cursor-pointer list-none flex items-center justify-between">
+                        <span data-i18n="faq4_q">Are multiple sheets supported?</span>
+                        <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </summary>
+                    <p class="text-gray-600 mt-2" data-i18n="faq4_a">Currently converts the first sheet. For multiple sheets, upload separately</p>
+                </details>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 text-white mt-20 py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_about">About Us</h4>
+                    <p class="text-gray-400 text-sm" data-i18n="footer_about_text">Focused on providing efficient, secure online tools</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_tools">Related Tools</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white" data-i18n="tool1">PDF to Image</a></li>
+                        <li><a href="#" class="hover:text-white" data-i18n="tool2">Word to PDF</a></li>
+                        <li><a href="#" class="hover:text-white" data-i18n="tool3">Image Compressor</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_help">Help Center</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white" data-i18n="help1">Tutorial</a></li>
+                        <li><a href="#" class="hover:text-white" data-i18n="help2">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white" data-i18n="help3">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_follow">Follow Us</h4>
+                    <div class="flex gap-4">
+                        <a href="https://x.com/HarriesBLOG" target="_blank" class="text-gray-400 hover:text-white">Twitter</a>
+                        <a href="https://github.com/Harries" target="_blank" class="text-gray-400 hover:text-white">GitHub</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+                <p>© 2025 Excel to Image Converter | <a href="#" class="hover:text-white" data-i18n="privacy">Privacy Policy</a> | <a href="#" class="hover:text-white" data-i18n="terms">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            en: {
+                app_title: "Excel to Image Converter",
+                hero_title: "Convert Excel to Image Instantly",
+                hero_subtitle: "Supports .xlsx and .xls formats | Preserves merged cells | Privacy-first processing",
+                user_count_text: "Served",
+                user_count_suffix: "users",
+                upload_text: "Drag & drop file here or click to upload",
+                upload_subtitle: "Supports .xlsx and .xls formats, max 10MB",
+                download_btn: "Download as HD Image",
+                preview: "Preview",
+                reset: "Upload New",
+                share: "Share",
+                feature1_title: "Lightning Fast",
+                feature1_desc: "Built with modern web technology, average conversion time under 3 seconds",
+                feature2_title: "Privacy Protected",
+                feature2_desc: "All processing happens locally in your browser, files never leave your device",
+                feature3_title: "Perfect Rendering",
+                feature3_desc: "Supports merged cells, 2x HD output, perfectly preserves Excel formatting",
+                faq_title: "Frequently Asked Questions",
+                faq1_q: "What Excel formats are supported?",
+                faq1_a: "We support both .xlsx and .xls formats, covering Excel 2007 and all later versions",
+                faq2_q: "Are files uploaded to a server?",
+                faq2_a: "No! All processing happens in your browser locally, files never leave your device",
+                faq3_q: "What image format is generated?",
+                faq3_a: "PNG format with 2x resolution output, ensuring crisp and clear images",
+                faq4_q: "Are multiple sheets supported?",
+                faq4_a: "Currently converts the first sheet. For multiple sheets, upload separately",
+                footer_about: "About Us",
+                footer_about_text: "Focused on providing efficient, secure online tools",
+                footer_tools: "Related Tools",
+                footer_help: "Help Center",
+                footer_follow: "Follow Us",
+                tool1: "PDF to Image",
+                tool2: "Word to PDF",
+                tool3: "Image Compressor",
+                help1: "Tutorial",
+                help2: "FAQ",
+                help3: "Contact Us",
+                privacy: "Privacy Policy",
+                terms: "Terms of Service",
+                error_file_size: "File size exceeds 10MB, please select a smaller file",
+                error_parse: "File parsing failed, please ensure you uploaded a valid Excel file",
+                error_generate: "Image generation failed, please try again",
+                error_drag: "Please drag a valid Excel file (.xlsx or .xls)",
+                processing_read: "Reading file...",
+                processing_generate: "Generating image...",
+                success_download: "Image downloaded successfully!",
+                share_text: "Check out this amazing Excel to Image converter tool!",
+                share_copied: "Link copied to clipboard!"
+            },
+            zh: {
+                app_title: "Excel转图片工具",
+                hero_title: "快速将Excel表格转为图片",
+                hero_subtitle: "支持.xlsx和.xls格式 | 完美保留合并单元格 | 纯前端处理保护隐私",
+                user_count_text: "已为",
+                user_count_suffix: "位用户提供服务",
+                upload_text: "拖拽文件到此处或点击上传",
+                upload_subtitle: "支持 .xlsx 和 .xls 格式,最大支持10MB",
+                download_btn: "下载为高清图片",
+                preview: "预览",
+                reset: "重新上传",
+                share: "分享",
+                feature1_title: "极速转换",
+                feature1_desc: "基于最新Web技术,平均转换时间少于3秒,大文件也能快速处理",
+                feature2_title: "隐私保护",
+                feature2_desc: "所有处理均在浏览器本地完成,文件不上传服务器,100%保护您的数据安全",
+                feature3_title: "完美还原",
+                feature3_desc: "支持合并单元格、中文字体,2倍高清输出,完美还原Excel原始样式",
+                faq_title: "常见问题",
+                faq1_q: "支持哪些Excel格式?",
+                faq1_a: "支持.xlsx和.xls两种格式,覆盖Excel 2007及以后的所有版本",
+                faq2_q: "文件会上传到服务器吗?",
+                faq2_a: "不会!所有处理都在您的浏览器本地完成,文件不会离开您的设备,完全保护隐私",
+                faq3_q: "生成的图片是什么格式?",
+                faq3_a: "PNG格式,2倍分辨率输出,确保图片清晰锐利,适合打印和展示",
+                faq4_q: "支持多工作表吗?",
+                faq4_a: "当前版本转换第一个工作表,如需转换多个工作表,请分别上传或联系我们升级功能",
+                footer_about: "关于我们",
+                footer_about_text: "专注于提供高效、安全的在线工具,让工作更简单",
+                footer_tools: "相关工具",
+                footer_help: "帮助中心",
+                footer_follow: "关注我们",
+                tool1: "PDF转图片",
+                tool2: "Word转PDF",
+                tool3: "图片压缩",
+                help1: "使用教程",
+                help2: "常见问题",
+                help3: "联系我们",
+                privacy: "隐私政策",
+                terms: "服务条款",
+                error_file_size: "文件大小超过10MB,请选择较小的文件",
+                error_parse: "文件解析失败,请确保上传的是有效的Excel文件",
+                error_generate: "图片生成失败,请重试",
+                error_drag: "请拖拽有效的Excel文件(.xlsx或.xls)",
+                processing_read: "正在读取文件...",
+                processing_generate: "正在生成图片...",
+                success_download: "图片下载成功!",
+                share_text: "推荐一个超好用的Excel转图片工具,免费在线使用!",
+                share_copied: "链接已复制到剪贴板,快去分享吧!"
+            },
+            'zh-CN': {
+                app_title: "Excel转图片工具",
+                hero_title: "快速将Excel表格转为图片",
+                hero_subtitle: "支持.xlsx和.xls格式 | 完美保留合并单元格 | 纯前端处理保护隐私",
+                user_count_text: "已为",
+                user_count_suffix: "位用户提供服务",
+                upload_text: "拖拽文件到此处或点击上传",
+                upload_subtitle: "支持 .xlsx 和 .xls 格式,最大支持10MB",
+                download_btn: "下载为高清图片",
+                preview: "预览",
+                reset: "重新上传",
+                share: "分享",
+                feature1_title: "极速转换",
+                feature1_desc: "基于最新Web技术,平均转换时间少于3秒,大文件也能快速处理",
+                feature2_title: "隐私保护",
+                feature2_desc: "所有处理均在浏览器本地完成,文件不上传服务器,100%保护您的数据安全",
+                feature3_title: "完美还原",
+                feature3_desc: "支持合并单元格、中文字体,2倍高清输出,完美还原Excel原始样式",
+                faq_title: "常见问题",
+                faq1_q: "支持哪些Excel格式?",
+                faq1_a: "支持.xlsx和.xls两种格式,覆盖Excel 2007及以后的所有版本",
+                faq2_q: "文件会上传到服务器吗?",
+                faq2_a: "不会!所有处理都在您的浏览器本地完成,文件不会离开您的设备,完全保护隐私",
+                faq3_q: "生成的图片是什么格式?",
+                faq3_a: "PNG格式,2倍分辨率输出,确保图片清晰锐利,适合打印和展示",
+                faq4_q: "支持多工作表吗?",
+                faq4_a: "当前版本转换第一个工作表,如需转换多个工作表,请分别上传或联系我们升级功能",
+                footer_about: "关于我们",
+                footer_about_text: "专注于提供高效、安全的在线工具,让工作更简单",
+                footer_tools: "相关工具",
+                footer_help: "帮助中心",
+                footer_follow: "关注我们",
+                tool1: "PDF转图片",
+                tool2: "Word转PDF",
+                tool3: "图片压缩",
+                help1: "使用教程",
+                help2: "常见问题",
+                help3: "联系我们",
+                privacy: "隐私政策",
+                terms: "服务条款",
+                error_file_size: "文件大小超过10MB,请选择较小的文件",
+                error_parse: "文件解析失败,请确保上传的是有效的Excel文件",
+                error_generate: "图片生成失败,请重试",
+                error_drag: "请拖拽有效的Excel文件(.xlsx或.xls)",
+                processing_read: "正在读取文件...",
+                processing_generate: "正在生成图片...",
+                success_download: "图片下载成功!",
+                share_text: "推荐一个超好用的Excel转图片工具,免费在线使用!",
+                share_copied: "链接已复制到剪贴板,快去分享吧!"
+            },
+            'zh-TW': {
+                app_title: "Excel轉圖片工具",
+                hero_title: "快速將Excel表格轉為圖片",
+                hero_subtitle: "支援.xlsx和.xls格式 | 完美保留合併儲存格 | 純前端處理保護隱私",
+                user_count_text: "已為",
+                user_count_suffix: "位使用者提供服務",
+                upload_text: "拖曳檔案到此處或點擊上傳",
+                upload_subtitle: "支援 .xlsx 和 .xls 格式，最大支援10MB",
+                download_btn: "下載為高清圖片",
+                preview: "預覽",
+                reset: "重新上傳",
+                share: "分享",
+                feature1_title: "極速轉換",
+                feature1_desc: "基於最新Web技術，平均轉換時間少於3秒，大檔案也能快速處理",
+                feature2_title: "隱私保護",
+                feature2_desc: "所有處理均在瀏覽器本地完成，檔案不上傳伺服器，100%保護您的資料安全",
+                feature3_title: "完美還原",
+                feature3_desc: "支援合併儲存格、中文字型，2倍高清輸出，完美還原Excel原始樣式",
+                faq_title: "常見問題",
+                faq1_q: "支援哪些Excel格式？",
+                faq1_a: "支援.xlsx和.xls兩種格式，涵蓋Excel 2007及以後的所有版本",
+                faq2_q: "檔案會上傳到伺服器嗎？",
+                faq2_a: "不會！所有處理都在您的瀏覽器本地完成，檔案不會離開您的裝置，完全保護隱私",
+                faq3_q: "產生的圖片是什麼格式？",
+                faq3_a: "PNG格式，2倍解析度輸出，確保圖片清晰銳利，適合列印和展示",
+                faq4_q: "支援多工作表嗎？",
+                faq4_a: "目前版本轉換第一個工作表，如需轉換多個工作表，請分別上傳或聯絡我們升級功能",
+                footer_about: "關於我們",
+                footer_about_text: "專注於提供高效、安全的線上工具，讓工作更簡單",
+                footer_tools: "相關工具",
+                footer_help: "幫助中心",
+                footer_follow: "關注我們",
+                tool1: "PDF轉圖片",
+                tool2: "Word轉PDF",
+                tool3: "圖片壓縮",
+                help1: "使用教學",
+                help2: "常見問題",
+                help3: "聯絡我們",
+                privacy: "隱私政策",
+                terms: "服務條款",
+                error_file_size: "檔案大小超過10MB，請選擇較小的檔案",
+                error_parse: "檔案解析失敗，請確保上傳的是有效的Excel檔案",
+                error_generate: "圖片產生失敗，請重試",
+                error_drag: "請拖曳有效的Excel檔案（.xlsx或.xls）",
+                processing_read: "正在讀取檔案...",
+                processing_generate: "正在產生圖片...",
+                success_download: "圖片下載成功！",
+                share_text: "推薦一個超好用的Excel轉圖片工具，免費線上使用！",
+                share_copied: "連結已複製到剪貼簿，快去分享吧！"
+            },
+            es: {
+                app_title: "Convertidor de Excel a Imagen",
+                hero_title: "Convierte Excel a Imagen al Instante",
+                hero_subtitle: "Admite formatos .xlsx y .xls | Conserva celdas combinadas | Procesamiento local",
+                user_count_text: "Ha servido a",
+                user_count_suffix: "usuarios",
+                upload_text: "Arrastra y suelta el archivo aquí o haz clic para cargar",
+                upload_subtitle: "Admite formatos .xlsx y .xls, máximo 10MB",
+                download_btn: "Descargar como Imagen HD",
+                preview: "Vista Previa",
+                reset: "Subir Nuevo",
+                share: "Compartir",
+                feature1_title: "Súper Rápido",
+                feature1_desc: "Construido con tecnología web moderna, tiempo promedio de conversión menor a 3 segundos",
+                feature2_title: "Privacidad Protegida",
+                feature2_desc: "Todo el procesamiento ocurre localmente en tu navegador, los archivos nunca salen de tu dispositivo",
+                feature3_title: "Renderizado Perfecto",
+                feature3_desc: "Admite celdas combinadas, salida HD 2x, conserva perfectamente el formato de Excel",
+                faq_title: "Preguntas Frecuentes",
+                faq1_q: "¿Qué formatos de Excel son compatibles?",
+                faq1_a: "Admitimos formatos .xlsx y .xls, cubriendo Excel 2007 y todas las versiones posteriores",
+                faq2_q: "¿Los archivos se suben a un servidor?",
+                faq2_a: "¡No! Todo el procesamiento ocurre localmente en tu navegador, los archivos nunca salen de tu dispositivo",
+                faq3_q: "¿Qué formato de imagen se genera?",
+                faq3_a: "Formato PNG con salida de resolución 2x, asegurando imágenes nítidas y claras",
+                faq4_q: "¿Se admiten múltiples hojas?",
+                faq4_a: "Actualmente convierte la primera hoja. Para múltiples hojas, sube por separado",
+                footer_about: "Acerca de Nosotros",
+                footer_about_text: "Enfocados en proporcionar herramientas en línea eficientes y seguras",
+                footer_tools: "Herramientas Relacionadas",
+                footer_help: "Centro de Ayuda",
+                footer_follow: "Síguenos",
+                tool1: "PDF a Imagen",
+                tool2: "Word a PDF",
+                tool3: "Compresor de Imágenes",
+                help1: "Tutorial",
+                help2: "Preguntas Frecuentes",
+                help3: "Contáctanos",
+                privacy: "Política de Privacidad",
+                terms: "Términos de Servicio",
+                error_file_size: "El tamaño del archivo excede los 10MB, selecciona un archivo más pequeño",
+                error_parse: "Error al analizar el archivo, asegúrate de haber subido un archivo Excel válido",
+                error_generate: "Error al generar la imagen, inténtalo de nuevo",
+                error_drag: "Por favor arrastra un archivo Excel válido (.xlsx o .xls)",
+                processing_read: "Leyendo archivo...",
+                processing_generate: "Generando imagen...",
+                success_download: "¡Imagen descargada exitosamente!",
+                share_text: "¡Mira esta increíble herramienta de conversión de Excel a imagen!",
+                share_copied: "¡Enlace copiado al portapapeles!"
+            },
+            fr: {
+                app_title: "Convertisseur Excel en Image",
+                hero_title: "Convertir Excel en Image Instantanément",
+                hero_subtitle: "Prend en charge les formats .xlsx et .xls | Préserve les cellules fusionnées | Traitement local",
+                user_count_text: "A servi",
+                user_count_suffix: "utilisateurs",
+                upload_text: "Glissez-déposez le fichier ici ou cliquez pour télécharger",
+                upload_subtitle: "Prend en charge les formats .xlsx et .xls, maximum 10 Mo",
+                download_btn: "Télécharger en Image HD",
+                preview: "Aperçu",
+                reset: "Nouveau Téléchargement",
+                share: "Partager",
+                feature1_title: "Ultra Rapide",
+                feature1_desc: "Construit avec une technologie web moderne, temps de conversion moyen inférieur à 3 secondes",
+                feature2_title: "Confidentialité Protégée",
+                feature2_desc: "Tout le traitement se fait localement dans votre navigateur, les fichiers ne quittent jamais votre appareil",
+                feature3_title: "Rendu Parfait",
+                feature3_desc: "Prend en charge les cellules fusionnées, sortie HD 2x, préserve parfaitement le formatage Excel",
+                faq_title: "Questions Fréquemment Posées",
+                faq1_q: "Quels formats Excel sont pris en charge?",
+                faq1_a: "Nous prenons en charge les formats .xlsx et .xls, couvrant Excel 2007 et toutes les versions ultérieures",
+                faq2_q: "Les fichiers sont-ils téléchargés sur un serveur?",
+                faq2_a: "Non! Tout le traitement se fait localement dans votre navigateur, les fichiers ne quittent jamais votre appareil",
+                faq3_q: "Quel format d'image est généré?",
+                faq3_a: "Format PNG avec sortie de résolution 2x, garantissant des images nettes et claires",
+                faq4_q: "Les feuilles multiples sont-elles prises en charge?",
+                faq4_a: "Convertit actuellement la première feuille. Pour plusieurs feuilles, téléchargez séparément",
+                footer_about: "À Propos de Nous",
+                footer_about_text: "Concentrés sur la fourniture d'outils en ligne efficaces et sécurisés",
+                footer_tools: "Outils Associés",
+                footer_help: "Centre d'Aide",
+                footer_follow: "Suivez-Nous",
+                tool1: "PDF en Image",
+                tool2: "Word en PDF",
+                tool3: "Compresseur d'Images",
+                help1: "Tutoriel",
+                help2: "FAQ",
+                help3: "Contactez-Nous",
+                privacy: "Politique de Confidentialité",
+                terms: "Conditions d'Utilisation",
+                error_file_size: "La taille du fichier dépasse 10 Mo, veuillez sélectionner un fichier plus petit",
+                error_parse: "Échec de l'analyse du fichier, assurez-vous d'avoir téléchargé un fichier Excel valide",
+                error_generate: "Échec de la génération de l'image, veuillez réessayer",
+                error_drag: "Veuillez glisser un fichier Excel valide (.xlsx ou .xls)",
+                processing_read: "Lecture du fichier...",
+                processing_generate: "Génération de l'image...",
+                success_download: "Image téléchargée avec succès!",
+                share_text: "Découvrez cet incroyable outil de conversion Excel en image!",
+                share_copied: "Lien copié dans le presse-papiers!"
+            },
+            de: {
+                app_title: "Excel zu Bild Konverter",
+                hero_title: "Excel sofort in Bild umwandeln",
+                hero_subtitle: "Unterstützt .xlsx und .xls Formate | Behält zusammengeführte Zellen | Lokale Verarbeitung",
+                user_count_text: "Hat",
+                user_count_suffix: "Benutzern gedient",
+                upload_text: "Datei hier ablegen oder zum Hochladen klicken",
+                upload_subtitle: "Unterstützt .xlsx und .xls Formate, maximal 10MB",
+                download_btn: "Als HD-Bild herunterladen",
+                preview: "Vorschau",
+                reset: "Neu hochladen",
+                share: "Teilen",
+                feature1_title: "Blitzschnell",
+                feature1_desc: "Mit moderner Webtechnologie gebaut, durchschnittliche Konvertierungszeit unter 3 Sekunden",
+                feature2_title: "Datenschutz Geschützt",
+                feature2_desc: "Alle Verarbeitung erfolgt lokal in Ihrem Browser, Dateien verlassen niemals Ihr Gerät",
+                feature3_title: "Perfektes Rendering",
+                feature3_desc: "Unterstützt zusammengeführte Zellen, 2x HD-Ausgabe, bewahrt Excel-Formatierung perfekt",
+                faq_title: "Häufig gestellte Fragen",
+                faq1_q: "Welche Excel-Formate werden unterstützt?",
+                faq1_a: "Wir unterstützen sowohl .xlsx als auch .xls Formate, die Excel 2007 und alle späteren Versionen abdecken",
+                faq2_q: "Werden Dateien auf einen Server hochgeladen?",
+                faq2_a: "Nein! Alle Verarbeitung erfolgt lokal in Ihrem Browser, Dateien verlassen niemals Ihr Gerät",
+                faq3_q: "Welches Bildformat wird generiert?",
+                faq3_a: "PNG-Format mit 2x Auflösungsausgabe, um scharfe und klare Bilder zu gewährleisten",
+                faq4_q: "Werden mehrere Blätter unterstützt?",
+                faq4_a: "Konvertiert derzeit das erste Blatt. Für mehrere Blätter separat hochladen",
+                footer_about: "Über Uns",
+                footer_about_text: "Fokussiert auf die Bereitstellung effizienter, sicherer Online-Tools",
+                footer_tools: "Verwandte Tools",
+                footer_help: "Hilfezentrum",
+                footer_follow: "Folgen Sie Uns",
+                tool1: "PDF zu Bild",
+                tool2: "Word zu PDF",
+                tool3: "Bildkompressor",
+                help1: "Anleitung",
+                help2: "FAQ",
+                help3: "Kontaktieren Sie Uns",
+                privacy: "Datenschutzrichtlinie",
+                terms: "Nutzungsbedingungen",
+                error_file_size: "Dateigröße überschreitet 10MB, bitte wählen Sie eine kleinere Datei",
+                error_parse: "Datei-Parsing fehlgeschlagen, stellen Sie sicher, dass Sie eine gültige Excel-Datei hochgeladen haben",
+                error_generate: "Bildgenerierung fehlgeschlagen, bitte versuchen Sie es erneut",
+                error_drag: "Bitte ziehen Sie eine gültige Excel-Datei (.xlsx oder .xls)",
+                processing_read: "Datei wird gelesen...",
+                processing_generate: "Bild wird generiert...",
+                success_download: "Bild erfolgreich heruntergeladen!",
+                share_text: "Schauen Sie sich dieses großartige Excel zu Bild Konverter-Tool an!",
+                share_copied: "Link in die Zwischenablage kopiert!"
+            },
+            ja: {
+                app_title: "Excel画像変換ツール",
+                hero_title: "Excelを瞬時に画像に変換",
+                hero_subtitle: ".xlsxと.xls形式に対応 | セル結合を保持 | ローカル処理",
+                user_count_text: "",
+                user_count_suffix: "人のユーザーにサービスを提供",
+                upload_text: "ファイルをドラッグ＆ドロップまたはクリックしてアップロード",
+                upload_subtitle: ".xlsxと.xls形式に対応、最大10MB",
+                download_btn: "HD画像としてダウンロード",
+                preview: "プレビュー",
+                reset: "新規アップロード",
+                share: "共有",
+                feature1_title: "超高速",
+                feature1_desc: "最新のWeb技術で構築、平均変換時間3秒未満",
+                feature2_title: "プライバシー保護",
+                feature2_desc: "すべての処理はブラウザ内でローカルに行われ、ファイルはデバイスから出ません",
+                feature3_title: "完璧なレンダリング",
+                feature3_desc: "セル結合に対応、2倍HD出力、Excelのフォーマットを完璧に保持",
+                faq_title: "よくある質問",
+                faq1_q: "どのExcel形式に対応していますか？",
+                faq1_a: ".xlsxと.xls形式の両方に対応、Excel 2007以降のすべてのバージョンをカバー",
+                faq2_q: "ファイルはサーバーにアップロードされますか？",
+                faq2_a: "いいえ！すべての処理はブラウザ内でローカルに行われ、ファイルはデバイスから出ません",
+                faq3_q: "どの画像形式が生成されますか？",
+                faq3_a: "PNG形式で2倍解像度出力、鮮明でクリアな画像を保証",
+                faq4_q: "複数のシートに対応していますか？",
+                faq4_a: "現在は最初のシートを変換します。複数のシートの場合は個別にアップロードしてください",
+                footer_about: "私たちについて",
+                footer_about_text: "効率的で安全なオンラインツールの提供に注力",
+                footer_tools: "関連ツール",
+                footer_help: "ヘルプセンター",
+                footer_follow: "フォローする",
+                tool1: "PDFから画像へ",
+                tool2: "WordからPDFへ",
+                tool3: "画像圧縮",
+                help1: "チュートリアル",
+                help2: "FAQ",
+                help3: "お問い合わせ",
+                privacy: "プライバシーポリシー",
+                terms: "利用規約",
+                error_file_size: "ファイルサイズが10MBを超えています。より小さいファイルを選択してください",
+                error_parse: "ファイルの解析に失敗しました。有効なExcelファイルをアップロードしてください",
+                error_generate: "画像の生成に失敗しました。もう一度お試しください",
+                error_drag: "有効なExcelファイル（.xlsxまたは.xls）をドラッグしてください",
+                processing_read: "ファイルを読み込んでいます...",
+                processing_generate: "画像を生成しています...",
+                success_download: "画像のダウンロードに成功しました！",
+                share_text: "この素晴らしいExcel画像変換ツールをチェックしてください！",
+                share_copied: "リンクがクリップボードにコピーされました！"
+            },
+            ko: {
+                app_title: "Excel 이미지 변환기",
+                hero_title: "Excel을 즉시 이미지로 변환",
+                hero_subtitle: ".xlsx 및 .xls 형식 지원 | 병합된 셀 보존 | 로컬 처리",
+                user_count_text: "",
+                user_count_suffix: "명의 사용자에게 서비스 제공",
+                upload_text: "파일을 여기로 드래그하거나 클릭하여 업로드",
+                upload_subtitle: ".xlsx 및 .xls 형식 지원, 최대 10MB",
+                download_btn: "HD 이미지로 다운로드",
+                preview: "미리보기",
+                reset: "새로 업로드",
+                share: "공유",
+                feature1_title: "초고속",
+                feature1_desc: "최신 웹 기술로 구축, 평균 변환 시간 3초 미만",
+                feature2_title: "개인정보 보호",
+                feature2_desc: "모든 처리는 브라우저에서 로컬로 수행되며 파일은 기기를 떠나지 않습니다",
+                feature3_title: "완벽한 렌더링",
+                feature3_desc: "병합된 셀 지원, 2배 HD 출력, Excel 서식을 완벽하게 보존",
+                faq_title: "자주 묻는 질문",
+                faq1_q: "어떤 Excel 형식이 지원되나요?",
+                faq1_a: ".xlsx 및 .xls 형식을 모두 지원하며 Excel 2007 이상의 모든 버전을 포함합니다",
+                faq2_q: "파일이 서버에 업로드되나요?",
+                faq2_a: "아니요! 모든 처리는 브라우저에서 로컬로 수행되며 파일은 기기를 떠나지 않습니다",
+                faq3_q: "어떤 이미지 형식이 생성되나요?",
+                faq3_a: "2배 해상도 출력의 PNG 형식으로 선명하고 깨끗한 이미지를 보장합니다",
+                faq4_q: "여러 시트가 지원되나요?",
+                faq4_a: "현재 첫 번째 시트를 변환합니다. 여러 시트의 경우 개별적으로 업로드하세요",
+                footer_about: "회사 소개",
+                footer_about_text: "효율적이고 안전한 온라인 도구 제공에 중점",
+                footer_tools: "관련 도구",
+                footer_help: "도움말 센터",
+                footer_follow: "팔로우",
+                tool1: "PDF에서 이미지로",
+                tool2: "Word에서 PDF로",
+                tool3: "이미지 압축기",
+                help1: "튜토리얼",
+                help2: "FAQ",
+                help3: "문의하기",
+                privacy: "개인정보 처리방침",
+                terms: "서비스 약관",
+                error_file_size: "파일 크기가 10MB를 초과합니다. 더 작은 파일을 선택하세요",
+                error_parse: "파일 구문 분석 실패, 유효한 Excel 파일을 업로드했는지 확인하세요",
+                error_generate: "이미지 생성 실패, 다시 시도하세요",
+                error_drag: "유효한 Excel 파일(.xlsx 또는 .xls)을 드래그하세요",
+                processing_read: "파일을 읽는 중...",
+                processing_generate: "이미지를 생성하는 중...",
+                success_download: "이미지 다운로드 성공!",
+                share_text: "이 놀라운 Excel 이미지 변환기 도구를 확인하세요!",
+                share_copied: "링크가 클립보드에 복사되었습니다!"
+            },
+            pt: {
+                app_title: "Conversor de Excel para Imagem",
+                hero_title: "Converta Excel para Imagem Instantaneamente",
+                hero_subtitle: "Suporta formatos .xlsx e .xls | Preserva células mescladas | Processamento local",
+                user_count_text: "Serviu",
+                user_count_suffix: "usuários",
+                upload_text: "Arraste e solte o arquivo aqui ou clique para carregar",
+                upload_subtitle: "Suporta formatos .xlsx e .xls, máximo 10MB",
+                download_btn: "Baixar como Imagem HD",
+                preview: "Visualizar",
+                reset: "Novo Upload",
+                share: "Compartilhar",
+                feature1_title: "Super Rápido",
+                feature1_desc: "Construído com tecnologia web moderna, tempo médio de conversão menor que 3 segundos",
+                feature2_title: "Privacidade Protegida",
+                feature2_desc: "Todo o processamento acontece localmente no seu navegador, arquivos nunca saem do seu dispositivo",
+                feature3_title: "Renderização Perfeita",
+                feature3_desc: "Suporta células mescladas, saída HD 2x, preserva perfeitamente a formatação do Excel",
+                faq_title: "Perguntas Frequentes",
+                faq1_q: "Quais formatos do Excel são suportados?",
+                faq1_a: "Suportamos formatos .xlsx e .xls, cobrindo Excel 2007 e todas as versões posteriores",
+                faq2_q: "Os arquivos são enviados para um servidor?",
+                faq2_a: "Não! Todo o processamento acontece localmente no seu navegador, arquivos nunca saem do seu dispositivo",
+                faq3_q: "Qual formato de imagem é gerado?",
+                faq3_a: "Formato PNG com saída de resolução 2x, garantindo imagens nítidas e claras",
+                faq4_q: "Múltiplas planilhas são suportadas?",
+                faq4_a: "Atualmente converte a primeira planilha. Para múltiplas planilhas, envie separadamente",
+                footer_about: "Sobre Nós",
+                footer_about_text: "Focados em fornecer ferramentas online eficientes e seguras",
+                footer_tools: "Ferramentas Relacionadas",
+                footer_help: "Central de Ajuda",
+                footer_follow: "Siga-nos",
+                tool1: "PDF para Imagem",
+                tool2: "Word para PDF",
+                tool3: "Compressor de Imagens",
+                help1: "Tutorial",
+                help2: "FAQ",
+                help3: "Contate-nos",
+                privacy: "Política de Privacidade",
+                terms: "Termos de Serviço",
+                error_file_size: "O tamanho do arquivo excede 10MB, selecione um arquivo menor",
+                error_parse: "Falha ao analisar o arquivo, certifique-se de ter enviado um arquivo Excel válido",
+                error_generate: "Falha ao gerar a imagem, tente novamente",
+                error_drag: "Por favor, arraste um arquivo Excel válido (.xlsx ou .xls)",
+                processing_read: "Lendo arquivo...",
+                processing_generate: "Gerando imagem...",
+                success_download: "Imagem baixada com sucesso!",
+                share_text: "Confira esta incrível ferramenta de conversão de Excel para imagem!",
+                share_copied: "Link copiado para a área de transferência!"
+            },
+            ru: {
+                app_title: "Конвертер Excel в изображение",
+                hero_title: "Мгновенно конвертируйте Excel в изображение",
+                hero_subtitle: "Поддержка форматов .xlsx и .xls | Сохраняет объединённые ячейки | Локальная обработка",
+                user_count_text: "Обслужено",
+                user_count_suffix: "пользователей",
+                upload_text: "Перетащите файл сюда или нажмите для загрузки",
+                upload_subtitle: "Поддержка форматов .xlsx и .xls, максимум 10МБ",
+                download_btn: "Скачать как HD изображение",
+                preview: "Предпросмотр",
+                reset: "Новая загрузка",
+                share: "Поделиться",
+                feature1_title: "Молниеносно быстро",
+                feature1_desc: "Построено на современной веб-технологии, среднее время конвертации менее 3 секунд",
+                feature2_title: "Защита конфиденциальности",
+                feature2_desc: "Вся обработка происходит локально в вашем браузере, файлы никогда не покидают ваше устройство",
+                feature3_title: "Идеальная визуализация",
+                feature3_desc: "Поддержка объединённых ячеек, вывод HD 2x, идеально сохраняет форматирование Excel",
+                faq_title: "Часто задаваемые вопросы",
+                faq1_q: "Какие форматы Excel поддерживаются?",
+                faq1_a: "Мы поддерживаем форматы .xlsx и .xls, охватывая Excel 2007 и все более поздние версии",
+                faq2_q: "Загружаются ли файлы на сервер?",
+                faq2_a: "Нет! Вся обработка происходит локально в вашем браузере, файлы никогда не покидают ваше устройство",
+                faq3_q: "Какой формат изображения генерируется?",
+                faq3_a: "Формат PNG с выводом разрешения 2x, обеспечивающий чёткие и ясные изображения",
+                faq4_q: "Поддерживаются ли несколько листов?",
+                faq4_a: "В настоящее время конвертируется первый лист. Для нескольких листов загружайте отдельно",
+                footer_about: "О нас",
+                footer_about_text: "Сосредоточены на предоставлении эффективных, безопасных онлайн-инструментов",
+                footer_tools: "Связанные инструменты",
+                footer_help: "Центр помощи",
+                footer_follow: "Подписывайтесь",
+                tool1: "PDF в изображение",
+                tool2: "Word в PDF",
+                tool3: "Сжатие изображений",
+                help1: "Учебное пособие",
+                help2: "FAQ",
+                help3: "Свяжитесь с нами",
+                privacy: "Политика конфиденциальности",
+                terms: "Условия обслуживания",
+                error_file_size: "Размер файла превышает 10МБ, выберите меньший файл",
+                error_parse: "Ошибка разбора файла, убедитесь, что вы загрузили действительный файл Excel",
+                error_generate: "Ошибка генерации изображения, попробуйте ещё раз",
+                error_drag: "Пожалуйста, перетащите действительный файл Excel (.xlsx или .xls)",
+                processing_read: "Чтение файла...",
+                processing_generate: "Генерация изображения...",
+                success_download: "Изображение успешно скачано!",
+                share_text: "Посмотрите этот замечательный инструмент конвертации Excel в изображение!",
+                share_copied: "Ссылка скопирована в буфер обмена!"
+            },
+            ar: {
+                app_title: "محول Excel إلى صورة",
+                hero_title: "تحويل Excel إلى صورة فورياً",
+                hero_subtitle: "يدعم صيغ .xlsx و .xls | يحافظ على الخلايا المدمجة | معالجة محلية",
+                user_count_text: "خدمنا",
+                user_count_suffix: "مستخدم",
+                upload_text: "اسحب وأفلت الملف هنا أو انقر للتحميل",
+                upload_subtitle: "يدعم صيغ .xlsx و .xls، حد أقصى 10 ميجابايت",
+                download_btn: "تحميل كصورة عالية الدقة",
+                preview: "معاينة",
+                reset: "تحميل جديد",
+                share: "مشاركة",
+                feature1_title: "سريع للغاية",
+                feature1_desc: "مبني بتقنية الويب الحديثة، متوسط وقت التحويل أقل من 3 ثوانٍ",
+                feature2_title: "حماية الخصوصية",
+                feature2_desc: "تتم جميع المعالجات محلياً في متصفحك، الملفات لا تغادر جهازك أبداً",
+                feature3_title: "عرض مثالي",
+                feature3_desc: "يدعم الخلايا المدمجة، إخراج HD 2x، يحافظ بشكل مثالي على تنسيق Excel",
+                faq_title: "الأسئلة الشائعة",
+                faq1_q: "ما هي صيغ Excel المدعومة؟",
+                faq1_a: "ندعم صيغ .xlsx و .xls، تغطي Excel 2007 وجميع الإصدارات اللاحقة",
+                faq2_q: "هل يتم تحميل الملفات إلى الخادم؟",
+                faq2_a: "لا! تتم جميع المعالجات محلياً في متصفحك، الملفات لا تغادر جهازك أبداً",
+                faq3_q: "ما هو تنسيق الصورة المولد؟",
+                faq3_a: "صيغة PNG بدقة 2x، مما يضمن صوراً واضحة ونقية",
+                faq4_q: "هل الأوراق المتعددة مدعومة؟",
+                faq4_a: "يحول حالياً الورقة الأولى. للأوراق المتعددة، قم بالتحميل بشكل منفصل",
+                footer_about: "معلومات عنا",
+                footer_about_text: "نركز على توفير أدوات عبر الإنترنت فعالة وآمنة",
+                footer_tools: "أدوات ذات صلة",
+                footer_help: "مركز المساعدة",
+                footer_follow: "تابعنا",
+                tool1: "PDF إلى صورة",
+                tool2: "Word إلى PDF",
+                tool3: "ضاغط الصور",
+                help1: "دليل تعليمي",
+                help2: "الأسئلة الشائعة",
+                help3: "اتصل بنا",
+                privacy: "سياسة الخصوصية",
+                terms: "شروط الخدمة",
+                error_file_size: "حجم الملف يتجاوز 10 ميجابايت، يرجى اختيار ملف أصغر",
+                error_parse: "فشل تحليل الملف، يرجى التأكد من تحميل ملف Excel صالح",
+                error_generate: "فشل إنشاء الصورة، يرجى المحاولة مرة أخرى",
+                error_drag: "يرجى سحب ملف Excel صالح (.xlsx أو .xls)",
+                processing_read: "جاري قراءة الملف...",
+                processing_generate: "جاري إنشاء الصورة...",
+                success_download: "تم تحميل الصورة بنجاح!",
+                share_text: "تحقق من أداة تحويل Excel إلى صورة المذهلة هذه!",
+                share_copied: "تم نسخ الرابط إلى الحافظة!"
+            },
+            hi: {
+                app_title: "Excel से इमेज कन्वर्टर",
+                hero_title: "Excel को तुरंत इमेज में बदलें",
+                hero_subtitle: ".xlsx और .xls फॉर्मेट समर्थित | मर्ज की गई सेल्स को सुरक्षित रखता है | स्थानीय प्रोसेसिंग",
+                user_count_text: "",
+                user_count_suffix: "उपयोगकर्ताओं को सेवा प्रदान की",
+                upload_text: "फ़ाइल को यहाँ खींचें और छोड़ें या अपलोड करने के लिए क्लिक करें",
+                upload_subtitle: ".xlsx और .xls फॉर्मेट समर्थित, अधिकतम 10MB",
+                download_btn: "HD इमेज के रूप में डाउनलोड करें",
+                preview: "पूर्वावलोकन",
+                reset: "नया अपलोड",
+                share: "शेयर करें",
+                feature1_title: "बिजली की तेजी",
+                feature1_desc: "आधुनिक वेब तकनीक से निर्मित, औसत रूपांतरण समय 3 सेकंड से कम",
+                feature2_title: "गोपनीयता सुरक्षित",
+                feature2_desc: "सभी प्रोसेसिंग आपके ब्राउज़र में स्थानीय रूप से होती है, फ़ाइलें कभी भी आपके डिवाइस को नहीं छोड़तीं",
+                feature3_title: "परफेक्ट रेंडरिंग",
+                feature3_desc: "मर्ज की गई सेल्स समर्थित, 2x HD आउटपुट, Excel फॉर्मेटिंग को पूरी तरह से सुरक्षित रखता है",
+                faq_title: "अक्सर पूछे जाने वाले प्रश्न",
+                faq1_q: "कौन से Excel फॉर्मेट समर्थित हैं?",
+                faq1_a: "हम .xlsx और .xls दोनों फॉर्मेट समर्थित करते हैं, Excel 2007 और सभी बाद के संस्करणों को कवर करते हैं",
+                faq2_q: "क्या फ़ाइलें सर्वर पर अपलोड की जाती हैं?",
+                faq2_a: "नहीं! सभी प्रोसेसिंग आपके ब्राउज़र में स्थानीय रूप से होती है, फ़ाइलें कभी भी आपके डिवाइस को नहीं छोड़तीं",
+                faq3_q: "कौन सा इमेज फॉर्मेट जेनरेट होता है?",
+                faq3_a: "PNG फॉर्मेट 2x रेज़ोल्यूशन आउटपुट के साथ, स्पष्ट और साफ़ इमेज सुनिश्चित करता है",
+                faq4_q: "क्या एकाधिक शीट समर्थित हैं?",
+                faq4_a: "वर्तमान में पहली शीट को कन्वर्ट करता है। एकाधिक शीट के लिए, अलग से अपलोड करें",
+                footer_about: "हमारे बारे में",
+                footer_about_text: "कुशल, सुरक्षित ऑनलाइन टूल प्रदान करने पर केंद्रित",
+                footer_tools: "संबंधित टूल",
+                footer_help: "सहायता केंद्र",
+                footer_follow: "हमें फॉलो करें",
+                tool1: "PDF से इमेज",
+                tool2: "Word से PDF",
+                tool3: "इमेज कम्प्रेसर",
+                help1: "ट्यूटोरियल",
+                help2: "FAQ",
+                help3: "हमसे संपर्क करें",
+                privacy: "गोपनीयता नीति",
+                terms: "सेवा की शर्तें",
+                error_file_size: "फ़ाइल का आकार 10MB से अधिक है, कृपया छोटी फ़ाइल चुनें",
+                error_parse: "फ़ाइल पार्सिंग विफल, कृपया सुनिश्चित करें कि आपने एक मान्य Excel फ़ाइल अपलोड की है",
+                error_generate: "इमेज जेनरेशन विफल, कृपया पुनः प्रयास करें",
+                error_drag: "कृपया एक मान्य Excel फ़ाइल (.xlsx या .xls) खींचें",
+                processing_read: "फ़ाइल पढ़ी जा रही है...",
+                processing_generate: "इमेज जेनरेट हो रही है...",
+                success_download: "इमेज सफलतापूर्वक डाउनलोड हुई!",
+                share_text: "इस अद्भुत Excel से इमेज कन्वर्टर टूल को देखें!",
+                share_copied: "लिंक क्लिपबोर्ड पर कॉपी हो गया!"
+            },
+            it: {
+                app_title: "Convertitore da Excel a Immagine",
+                hero_title: "Converti Excel in Immagine Istantaneamente",
+                hero_subtitle: "Supporta formati .xlsx e .xls | Conserva celle unite | Elaborazione locale",
+                user_count_text: "Ha servito",
+                user_count_suffix: "utenti",
+                upload_text: "Trascina e rilascia il file qui o fai clic per caricare",
+                upload_subtitle: "Supporta formati .xlsx e .xls, massimo 10MB",
+                download_btn: "Scarica come Immagine HD",
+                preview: "Anteprima",
+                reset: "Nuovo Caricamento",
+                share: "Condividi",
+                feature1_title: "Veloce come un Fulmine",
+                feature1_desc: "Costruito con tecnologia web moderna, tempo medio di conversione inferiore a 3 secondi",
+                feature2_title: "Privacy Protetta",
+                feature2_desc: "Tutta l'elaborazione avviene localmente nel tuo browser, i file non lasciano mai il tuo dispositivo",
+                feature3_title: "Rendering Perfetto",
+                feature3_desc: "Supporta celle unite, output HD 2x, conserva perfettamente la formattazione di Excel",
+                faq_title: "Domande Frequenti",
+                faq1_q: "Quali formati Excel sono supportati?",
+                faq1_a: "Supportiamo sia formati .xlsx che .xls, coprendo Excel 2007 e tutte le versioni successive",
+                faq2_q: "I file vengono caricati su un server?",
+                faq2_a: "No! Tutta l'elaborazione avviene localmente nel tuo browser, i file non lasciano mai il tuo dispositivo",
+                faq3_q: "Quale formato di immagine viene generato?",
+                faq3_a: "Formato PNG con output di risoluzione 2x, garantendo immagini nitide e chiare",
+                faq4_q: "Sono supportati più fogli?",
+                faq4_a: "Attualmente converte il primo foglio. Per più fogli, caricare separatamente",
+                footer_about: "Chi Siamo",
+                footer_about_text: "Focalizzati nel fornire strumenti online efficienti e sicuri",
+                footer_tools: "Strumenti Correlati",
+                footer_help: "Centro Assistenza",
+                footer_follow: "Seguici",
+                tool1: "PDF in Immagine",
+                tool2: "Word in PDF",
+                tool3: "Compressore di Immagini",
+                help1: "Tutorial",
+                help2: "FAQ",
+                help3: "Contattaci",
+                privacy: "Informativa sulla Privacy",
+                terms: "Termini di Servizio",
+                error_file_size: "La dimensione del file supera i 10MB, seleziona un file più piccolo",
+                error_parse: "Analisi del file fallita, assicurati di aver caricato un file Excel valido",
+                error_generate: "Generazione dell'immagine fallita, riprova",
+                error_drag: "Trascina un file Excel valido (.xlsx o .xls)",
+                processing_read: "Lettura del file...",
+                processing_generate: "Generazione dell'immagine...",
+                success_download: "Immagine scaricata con successo!",
+                share_text: "Dai un'occhiata a questo fantastico strumento di conversione da Excel a immagine!",
+                share_copied: "Link copiato negli appunti!"
+            },
+            nl: {
+                app_title: "Excel naar Afbeelding Converter",
+                hero_title: "Converteer Excel Direct naar Afbeelding",
+                hero_subtitle: "Ondersteunt .xlsx en .xls formaten | Behoudt samengevoegde cellen | Lokale verwerking",
+                user_count_text: "Heeft",
+                user_count_suffix: "gebruikers gediend",
+                upload_text: "Sleep bestand hier of klik om te uploaden",
+                upload_subtitle: "Ondersteunt .xlsx en .xls formaten, maximaal 10MB",
+                download_btn: "Download als HD Afbeelding",
+                preview: "Voorbeeld",
+                reset: "Nieuwe Upload",
+                share: "Delen",
+                feature1_title: "Bliksemssnel",
+                feature1_desc: "Gebouwd met moderne webtechnologie, gemiddelde conversietijd onder 3 seconden",
+                feature2_title: "Privacy Beschermd",
+                feature2_desc: "Alle verwerking gebeurt lokaal in je browser, bestanden verlaten nooit je apparaat",
+                feature3_title: "Perfecte Weergave",
+                feature3_desc: "Ondersteunt samengevoegde cellen, 2x HD uitvoer, behoudt Excel-opmaak perfect",
+                faq_title: "Veelgestelde Vragen",
+                faq1_q: "Welke Excel-formaten worden ondersteund?",
+                faq1_a: "We ondersteunen zowel .xlsx als .xls formaten, die Excel 2007 en alle latere versies dekken",
+                faq2_q: "Worden bestanden naar een server geüpload?",
+                faq2_a: "Nee! Alle verwerking gebeurt lokaal in je browser, bestanden verlaten nooit je apparaat",
+                faq3_q: "Welk afbeeldingsformaat wordt gegenereerd?",
+                faq3_a: "PNG-formaat met 2x resolutie-uitvoer, wat scherpe en heldere afbeeldingen garandeert",
+                faq4_q: "Worden meerdere bladen ondersteund?",
+                faq4_a: "Converteert momenteel het eerste blad. Voor meerdere bladen, afzonderlijk uploaden",
+                footer_about: "Over Ons",
+                footer_about_text: "Gericht op het leveren van efficiënte, veilige online tools",
+                footer_tools: "Gerelateerde Tools",
+                footer_help: "Helpcentrum",
+                footer_follow: "Volg Ons",
+                tool1: "PDF naar Afbeelding",
+                tool2: "Word naar PDF",
+                tool3: "Afbeeldingscompressor",
+                help1: "Handleiding",
+                help2: "FAQ",
+                help3: "Neem Contact Op",
+                privacy: "Privacybeleid",
+                terms: "Servicevoorwaarden",
+                error_file_size: "Bestandsgrootte overschrijdt 10MB, selecteer een kleiner bestand",
+                error_parse: "Bestand parseren mislukt, zorg ervoor dat je een geldig Excel-bestand hebt geüpload",
+                error_generate: "Afbeelding genereren mislukt, probeer opnieuw",
+                error_drag: "Sleep een geldig Excel-bestand (.xlsx of .xls)",
+                processing_read: "Bestand lezen...",
+                processing_generate: "Afbeelding genereren...",
+                success_download: "Afbeelding succesvol gedownload!",
+                share_text: "Bekijk deze geweldige Excel naar afbeelding converter tool!",
+                share_copied: "Link gekopieerd naar klembord!"
+            }
+        };
+
+        let currentLang = 'en';
+        let excelData = null;
+        let merges = [];
+        let currentFileName = '';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            if (lang === 'ar') {
+                document.documentElement.dir = 'rtl';
+            } else {
+                document.documentElement.dir = 'ltr';
+            }
+            
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        document.getElementById('languageSelect').addEventListener('change', (e) => {
+            setLanguage(e.target.value);
+        });
+
+        const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+        document.getElementById('languageSelect').value = savedLang;
+        setLanguage(savedLang);
+
+        function showError(message) {
+            document.getElementById('errorMsg').classList.remove('hidden');
+            document.getElementById('errorText').textContent = message;
+            setTimeout(() => {
+                document.getElementById('errorMsg').classList.add('hidden');
+            }, 5000);
+        }
+
+        function showProcessing(text) {
+            document.getElementById('processingMsg').classList.remove('hidden');
+            document.getElementById('processingText').textContent = text;
+        }
+
+        function hideProcessing() {
+            document.getElementById('processingMsg').classList.add('hidden');
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 10 * 1024 * 1024) {
+                showError(translations[currentLang].error_file_size);
+                return;
+            }
+
+            showProcessing(translations[currentLang].processing_read);
+
+            try {
+                const data = await file.arrayBuffer();
+                const workbook = XLSX.read(data, {
+                    cellStyles: true,
+                    cellDates: true,
+                    cellNF: true
+                });
+
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                excelData = XLSX.utils.sheet_to_json(firstSheet, { 
+                    header: 1, 
+                    defval: '',
+                    raw: false
+                });
+
+                merges = firstSheet['!merges'] || [];
+                currentFileName = file.name.replace(/\.[^/.]+$/, '');
+
+                renderPreview();
+                
+                document.getElementById('previewSection').classList.remove('hidden');
+                document.getElementById('downloadBtn').classList.remove('hidden');
+                
+                hideProcessing();
+                
+                incrementUserCount();
+            } catch (err) {
+                hideProcessing();
+                showError(translations[currentLang].error_parse);
+                console.error(err);
+            }
+        }
+
+        function getCellMergeInfo(rowIndex, colIndex) {
+            for (let merge of merges) {
+                if (rowIndex >= merge.s.r && rowIndex <= merge.e.r &&
+                    colIndex >= merge.s.c && colIndex <= merge.e.c) {
+                    if (rowIndex === merge.s.r && colIndex === merge.s.c) {
+                        return {
+                            rowSpan: merge.e.r - merge.s.r + 1,
+                            colSpan: merge.e.c - merge.s.c + 1,
+                            isFirst: true
+                        };
+                    }
+                    return { isFirst: false };
+                }
+            }
+            return { isFirst: true, rowSpan: 1, colSpan: 1 };
+        }
+
+        function renderPreview() {
+            document.getElementById('fileName').textContent = currentFileName;
+            
+            let tableHTML = '<table id="previewTable" style="border-collapse: collapse; font-family: Arial, Microsoft YaHei, sans-serif; font-size: 14px; width: 100%;">';
+            
+            excelData.forEach((row, rowIndex) => {
+                tableHTML += '<tr>';
+                row.forEach((cell, colIndex) => {
+                    const mergeInfo = getCellMergeInfo(rowIndex, colIndex);
+                    
+                    if (!mergeInfo.isFirst) return;
+
+                    const cellValue = cell || '';
+                    tableHTML += `<td rowspan="${mergeInfo.rowSpan}" colspan="${mergeInfo.colSpan}" style="border: 1px solid #d1d5db; padding: 8px 12px; background: white; min-width: 80px; text-align: left; vertical-align: middle; white-space: pre-wrap; word-break: break-word;">${cellValue}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            
+            tableHTML += '</table>';
+            document.getElementById('tableContainer').innerHTML = tableHTML;
+        }
+
+        async function downloadAsImage() {
+            const table = document.getElementById('previewTable');
+            if (!table) return;
+
+            showProcessing(translations[currentLang].processing_generate);
+            document.getElementById('downloadBtn').classList.add('hidden');
+
+            try {
+                const canvas = await html2canvas(table, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    useCORS: true
+                });
+
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${currentFileName || 'table'}.png`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    hideProcessing();
+                    document.getElementById('downloadBtn').classList.remove('hidden');
+                    
+                    showSuccess();
+                });
+            } catch (err) {
+                hideProcessing();
+                document.getElementById('downloadBtn').classList.remove('hidden');
+                showError(translations[currentLang].error_generate);
+                console.error(err);
+            }
+        }
+
+        function showSuccess() {
+            const successMsg = document.createElement('div');
+            successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2';
+            successMsg.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>${translations[currentLang].success_download}</span>`;
+            document.body.appendChild(successMsg);
+            setTimeout(() => successMsg.remove(), 3000);
+        }
+
+        function resetUpload() {
+            excelData = null;
+            merges = [];
+            currentFileName = '';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewSection').classList.add('hidden');
+            document.getElementById('downloadBtn').classList.add('hidden');
+        }
+
+        function shareToSocial() {
+            if (navigator.share) {
+                navigator.share({
+                    title: translations[currentLang].app_title,
+                    text: translations[currentLang].share_text,
+                    url: window.location.href
+                });
+            } else {
+                const url = window.location.href;
+                navigator.clipboard.writeText(url);
+                alert(translations[currentLang].share_copied);
+            }
+        }
+
+        function incrementUserCount() {
+            const countElement = document.getElementById('userCount');
+            let count = parseInt(countElement.textContent.replace(/,/g, ''));
+            count++;
+            countElement.textContent = count.toLocaleString();
+        }
+
+        document.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        document.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && (files[0].name.endsWith('.xlsx') || files[0].name.endsWith('.xls'))) {
+                document.getElementById('fileInput').files = files;
+                handleFileUpload({ target: { files: files } });
+            } else {
+                showError(translations[currentLang].error_drag);
+            }
+        });
+    </script>
+</body>
+</html>
