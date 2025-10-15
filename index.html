@@ -95,17 +95,114 @@
                     <p class="text-red-700" id="errorText"></p>
                 </div>
 
-                <div id="processingMsg" class="hidden flex items-center gap-3 text-indigo-600 text-lg font-medium">
-                    <div class="spinner"></div>
-                    <span id="processingText">Processing...</span>
+                <div id="processingMsg" class="hidden flex flex-col items-center gap-3 text-indigo-600 text-lg font-medium">
+                    <div class="flex items-center gap-3">
+                        <div class="spinner"></div>
+                        <span id="processingText">Processing...</span>
+                    </div>
+                    <div id="progressContainer" class="hidden w-full max-w-md">
+                        <div class="bg-gray-200 rounded-full h-2">
+                            <div id="progressBar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <div class="text-sm text-gray-600 mt-1 text-center">
+                            <span id="progressText">0%</span>
+                        </div>
+                    </div>
                 </div>
 
-                <button id="downloadBtn" onclick="downloadAsImage()" class="hidden flex items-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-xl hover:shadow-2xl transform hover:scale-105">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                <div class="flex flex-col sm:flex-row gap-4 items-center">
+                    <button id="downloadBtn" onclick="downloadAsImage()" class="hidden flex items-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-xl hover:shadow-2xl transform hover:scale-105">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span data-i18n="download_btn">Download as HD Image</span>
+                    </button>
+
+                    <button id="quickDownloadBtn" onclick="quickDownload()" class="hidden flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        <span>快速下载</span>
+                    </button>
+
+                    <button id="settingsBtn" onclick="toggleSettings()" class="hidden flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span>性能设置</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 性能设置面板 -->
+        <div id="settingsPanel" class="hidden bg-white rounded-2xl shadow-2xl p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-800">性能设置</h3>
+                <button onclick="toggleSettings()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
-                    <span data-i18n="download_btn">Download as HD Image</span>
                 </button>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">最大行数限制</label>
+                    <input type="number" id="maxRowsInput" min="50" max="2000" step="50" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <p class="text-xs text-gray-500 mt-1">建议值：200-500行</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">最大列数限制</label>
+                    <input type="number" id="maxColsInput" min="10" max="100" step="5" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <p class="text-xs text-gray-500 mt-1">建议值：20-50列</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">图片质量</label>
+                    <select id="qualitySelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <option value="fast">快速模式 (1x)</option>
+                        <option value="standard" selected>标准模式 (1.5x)</option>
+                        <option value="high">高质量 (2x)</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">快速模式转换更快</p>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" id="showFullDataCheck" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    <span class="text-sm text-gray-700">显示完整数据（忽略行列限制）</span>
+                </label>
+                <p class="text-xs text-gray-500 mt-1">⚠️ 大文件可能导致性能问题</p>
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button onclick="applySettings()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                    应用设置
+                </button>
+                <button onclick="resetSettings()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                    重置默认
+                </button>
+            </div>
+
+            <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                <div class="flex items-start gap-2">
+                    <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div class="text-sm text-blue-700">
+                        <p class="font-medium mb-1">性能优化提示：</p>
+                        <ul class="list-disc list-inside space-y-1 text-xs">
+                            <li>大型表格会自动限制显示范围以提高性能</li>
+                            <li>如需处理完整数据，建议先在Excel中分割表格</li>
+                            <li>推荐最大处理范围：500行 × 30列</li>
+                            <li>使用快速模式可大幅提升转换速度</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -119,7 +216,7 @@
                 </div>
                 <button onclick="resetUpload()" class="text-gray-500 hover:text-gray-700 text-sm font-medium" data-i18n="reset">Upload New</button>
             </div>
-            
+
             <div class="overflow-x-auto border border-gray-200 rounded-lg">
                 <div id="tableContainer"></div>
             </div>
@@ -998,6 +1095,11 @@
         let excelData = null;
         let merges = [];
         let currentFileName = '';
+        let isProcessing = false;
+        let maxRows = 500;  // 降低默认限制以提高速度
+        let maxCols = 30;   // 降低默认限制以提高速度
+        let imageQuality = 'standard'; // 图片质量：fast, standard, high
+        let showFullData = false; // 是否显示完整数据
 
         function setLanguage(lang) {
             currentLang = lang;
@@ -1027,12 +1129,40 @@
         document.getElementById('languageSelect').value = savedLang;
         setLanguage(savedLang);
 
+        // 初始化性能设置
+        initializeSettings();
+
         function showError(message) {
             document.getElementById('errorMsg').classList.remove('hidden');
             document.getElementById('errorText').textContent = message;
             setTimeout(() => {
                 document.getElementById('errorMsg').classList.add('hidden');
             }, 5000);
+        }
+
+        function showWarning(message) {
+            // 创建警告消息元素
+            const warningMsg = document.createElement('div');
+            warningMsg.className = 'fixed top-4 right-4 bg-yellow-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 max-w-md';
+            warningMsg.innerHTML = `
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+                <span class="text-sm">${message}</span>
+                <button onclick="this.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+            document.body.appendChild(warningMsg);
+
+            // 10秒后自动消失
+            setTimeout(() => {
+                if (warningMsg.parentElement) {
+                    warningMsg.remove();
+                }
+            }, 10000);
         }
 
         function showProcessing(text) {
@@ -1048,11 +1178,18 @@
             const file = event.target.files[0];
             if (!file) return;
 
+            // 防止重复处理
+            if (isProcessing) {
+                showError('正在处理中，请稍候...');
+                return;
+            }
+
             if (file.size > 10 * 1024 * 1024) {
                 showError(translations[currentLang].error_file_size);
                 return;
             }
 
+            isProcessing = true;
             showProcessing(translations[currentLang].processing_read);
 
             try {
@@ -1064,25 +1201,64 @@
                 });
 
                 const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                excelData = XLSX.utils.sheet_to_json(firstSheet, { 
-                    header: 1, 
+
+                // 获取工作表范围
+                const range = XLSX.utils.decode_range(firstSheet['!ref'] || 'A1');
+                const actualRows = range.e.r + 1;
+                const actualCols = range.e.c + 1;
+
+                // 检查数据大小并给出警告
+                if (actualRows > maxRows || actualCols > maxCols) {
+                    const message = `检测到大型表格 (${actualRows}行 x ${actualCols}列)。为了性能考虑，将只显示前${maxRows}行和前${maxCols}列。`;
+                    showWarning(message);
+                }
+
+                // 根据设置决定是否限制数据范围
+                const limitedRange = showFullData ? range : {
+                    s: { r: 0, c: 0 },
+                    e: {
+                        r: Math.min(range.e.r, maxRows - 1),
+                        c: Math.min(range.e.c, maxCols - 1)
+                    }
+                };
+
+                // 使用限制范围读取数据
+                excelData = XLSX.utils.sheet_to_json(firstSheet, {
+                    header: 1,
                     defval: '',
-                    raw: false
+                    raw: false,
+                    range: limitedRange
                 });
 
-                merges = firstSheet['!merges'] || [];
+                // 过滤合并单元格信息，只保留在限制范围内的
+                merges = (firstSheet['!merges'] || []).filter(merge =>
+                    merge.s.r < maxRows && merge.s.c < maxCols &&
+                    merge.e.r < maxRows && merge.e.c < maxCols
+                );
+
                 currentFileName = file.name.replace(/\.[^/.]+$/, '');
 
-                renderPreview();
-                
-                document.getElementById('previewSection').classList.remove('hidden');
-                document.getElementById('downloadBtn').classList.remove('hidden');
-                
-                hideProcessing();
-                
-                incrementUserCount();
+                // 使用 setTimeout 让渲染异步进行，避免阻塞UI
+                setTimeout(() => {
+                    renderPreview();
+
+                    document.getElementById('previewSection').classList.remove('hidden');
+                    document.getElementById('downloadBtn').classList.remove('hidden');
+                    document.getElementById('quickDownloadBtn').classList.remove('hidden');
+                    document.getElementById('settingsBtn').classList.remove('hidden');
+
+                    // 显示数据范围信息
+                    showDataInfo();
+
+                    hideProcessing();
+                    isProcessing = false;
+
+                    incrementUserCount();
+                }, 100);
+
             } catch (err) {
                 hideProcessing();
+                isProcessing = false;
                 showError(translations[currentLang].error_parse);
                 console.error(err);
             }
@@ -1107,60 +1283,375 @@
 
         function renderPreview() {
             document.getElementById('fileName').textContent = currentFileName;
-            
-            let tableHTML = '<table id="previewTable" style="border-collapse: collapse; font-family: Arial, Microsoft YaHei, sans-serif; font-size: 14px; width: 100%;">';
-            
-            excelData.forEach((row, rowIndex) => {
-                tableHTML += '<tr>';
-                row.forEach((cell, colIndex) => {
-                    const mergeInfo = getCellMergeInfo(rowIndex, colIndex);
-                    
-                    if (!mergeInfo.isFirst) return;
 
-                    const cellValue = cell || '';
-                    tableHTML += `<td rowspan="${mergeInfo.rowSpan}" colspan="${mergeInfo.colSpan}" style="border: 1px solid #d1d5db; padding: 8px 12px; background: white; min-width: 80px; text-align: left; vertical-align: middle; white-space: pre-wrap; word-break: break-word;">${cellValue}</td>`;
-                });
-                tableHTML += '</tr>';
-            });
-            
-            tableHTML += '</table>';
-            document.getElementById('tableContainer').innerHTML = tableHTML;
+            const container = document.getElementById('tableContainer');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            // 显示进度条
+            if (excelData.length > 100) {
+                progressContainer.classList.remove('hidden');
+            }
+
+            // 使用 DocumentFragment 提高性能
+            const fragment = document.createDocumentFragment();
+            const table = document.createElement('table');
+            table.id = 'previewTable';
+            table.style.cssText = 'border-collapse: collapse; font-family: Arial, Microsoft YaHei, sans-serif; font-size: 14px; width: 100%;';
+
+            // 分批渲染，避免一次性渲染大量DOM元素
+            const batchSize = 50; // 每批处理50行
+            let currentBatch = 0;
+            const totalBatches = Math.ceil(excelData.length / batchSize);
+
+            function renderBatch() {
+                const startRow = currentBatch * batchSize;
+                const endRow = Math.min(startRow + batchSize, excelData.length);
+
+                for (let rowIndex = startRow; rowIndex < endRow; rowIndex++) {
+                    const row = excelData[rowIndex];
+                    const tr = document.createElement('tr');
+
+                    if (row) {
+                        for (let colIndex = 0; colIndex < row.length; colIndex++) {
+                            const cell = row[colIndex];
+                            const mergeInfo = getCellMergeInfo(rowIndex, colIndex);
+
+                            if (!mergeInfo.isFirst) continue;
+
+                            const td = document.createElement('td');
+                            td.rowSpan = mergeInfo.rowSpan;
+                            td.colSpan = mergeInfo.colSpan;
+                            td.style.cssText = 'border: 1px solid #d1d5db; padding: 8px 12px; background: white; min-width: 80px; text-align: left; vertical-align: middle; white-space: pre-wrap; word-break: break-word;';
+                            td.textContent = cell || '';
+                            tr.appendChild(td);
+                        }
+                    }
+
+                    table.appendChild(tr);
+                }
+
+                currentBatch++;
+
+                // 更新进度
+                const progress = Math.round((currentBatch / totalBatches) * 100);
+                progressBar.style.width = progress + '%';
+                progressText.textContent = progress + '%';
+
+                // 如果还有更多行需要渲染，继续下一批
+                if (endRow < excelData.length) {
+                    // 使用 requestAnimationFrame 确保不阻塞UI
+                    requestAnimationFrame(renderBatch);
+                } else {
+                    // 渲染完成
+                    fragment.appendChild(table);
+                    container.innerHTML = '';
+                    container.appendChild(fragment);
+
+                    // 隐藏进度条
+                    progressContainer.classList.add('hidden');
+                }
+            }
+
+            // 开始渲染
+            renderBatch();
         }
 
         async function downloadAsImage() {
             const table = document.getElementById('previewTable');
             if (!table) return;
 
+            if (isProcessing) {
+                showError('正在处理中，请稍候...');
+                return;
+            }
+
+            isProcessing = true;
             showProcessing(translations[currentLang].processing_generate);
             document.getElementById('downloadBtn').classList.add('hidden');
 
+            // 显示进度条
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            progressContainer.classList.remove('hidden');
+            progressBar.style.width = '0%';
+            progressText.textContent = '0%';
+
             try {
+                // 根据质量设置选择不同的配置
+                const qualitySettings = {
+                    fast: {
+                        scale: 1,
+                        useCORS: false,
+                        allowTaint: true,
+                        foreignObjectRendering: true
+                    },
+                    standard: {
+                        scale: 1.5,
+                        useCORS: true,
+                        allowTaint: false,
+                        foreignObjectRendering: false
+                    },
+                    high: {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: false,
+                        foreignObjectRendering: false
+                    }
+                };
+
+                const settings = qualitySettings[imageQuality];
+
+                // 更新进度
+                progressBar.style.width = '20%';
+                progressText.textContent = '20%';
+
+                // 如果是快速模式，先简化表格样式
+                if (imageQuality === 'fast') {
+                    optimizeTableForFastRender(table);
+                }
+
+                // 更新进度
+                progressBar.style.width = '40%';
+                progressText.textContent = '40%';
+
+                // 使用优化的配置生成图片
                 const canvas = await html2canvas(table, {
-                    scale: 2,
+                    scale: settings.scale,
                     backgroundColor: '#ffffff',
                     logging: false,
-                    useCORS: true
+                    useCORS: settings.useCORS,
+                    allowTaint: settings.allowTaint,
+                    foreignObjectRendering: settings.foreignObjectRendering,
+                    imageTimeout: imageQuality === 'fast' ? 5000 : 15000,
+                    removeContainer: true,
+                    scrollX: 0,
+                    scrollY: 0,
+                    onclone: function(clonedDoc) {
+                        // 在克隆文档中进一步优化
+                        const clonedTable = clonedDoc.getElementById('previewTable');
+                        if (clonedTable && imageQuality === 'fast') {
+                            optimizeClonedTable(clonedTable);
+                        }
+                    }
                 });
+
+                // 更新进度
+                progressBar.style.width = '80%';
+                progressText.textContent = '80%';
+
+                // 恢复表格样式
+                if (imageQuality === 'fast') {
+                    restoreTableStyles(table);
+                }
+
+                // 生成下载链接
+                canvas.toBlob((blob) => {
+                    progressBar.style.width = '100%';
+                    progressText.textContent = '100%';
+
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${currentFileName || 'table'}_${imageQuality}.png`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+
+                    hideProcessing();
+                    progressContainer.classList.add('hidden');
+                    document.getElementById('downloadBtn').classList.remove('hidden');
+                    isProcessing = false;
+
+                    showSuccess();
+                }, 'image/png', imageQuality === 'fast' ? 0.8 : 0.95);
+
+            } catch (err) {
+                hideProcessing();
+                progressContainer.classList.add('hidden');
+                document.getElementById('downloadBtn').classList.remove('hidden');
+                isProcessing = false;
+                showError(translations[currentLang].error_generate);
+                console.error(err);
+            }
+        }
+
+        function optimizeTableForFastRender(table) {
+            // 存储原始样式
+            table.dataset.originalStyle = table.style.cssText;
+
+            // 简化样式以提高渲染速度
+            table.style.cssText += `
+                font-size: 12px !important;
+                border-collapse: separate !important;
+                border-spacing: 1px !important;
+            `;
+
+            // 简化单元格样式
+            const cells = table.querySelectorAll('td');
+            cells.forEach(cell => {
+                cell.dataset.originalStyle = cell.style.cssText;
+                cell.style.cssText += `
+                    border: 1px solid #ccc !important;
+                    padding: 4px 6px !important;
+                    white-space: nowrap !important;
+                    overflow: hidden !important;
+                    text-overflow: ellipsis !important;
+                `;
+            });
+        }
+
+        function optimizeClonedTable(clonedTable) {
+            // 在克隆的表格中进一步优化
+            clonedTable.style.cssText += `
+                max-width: 1200px !important;
+                font-family: Arial, sans-serif !important;
+            `;
+
+            const cells = clonedTable.querySelectorAll('td');
+            cells.forEach(cell => {
+                cell.style.cssText += `
+                    max-width: 150px !important;
+                    font-size: 11px !important;
+                `;
+            });
+        }
+
+        function restoreTableStyles(table) {
+            // 恢复原始样式
+            if (table.dataset.originalStyle) {
+                table.style.cssText = table.dataset.originalStyle;
+                delete table.dataset.originalStyle;
+            }
+
+            const cells = table.querySelectorAll('td');
+            cells.forEach(cell => {
+                if (cell.dataset.originalStyle) {
+                    cell.style.cssText = cell.dataset.originalStyle;
+                    delete cell.dataset.originalStyle;
+                }
+            });
+        }
+
+        // 快速下载功能 - 使用Canvas直接渲染
+        async function quickDownload() {
+            if (isProcessing) {
+                showError('正在处理中，请稍候...');
+                return;
+            }
+
+            isProcessing = true;
+            showProcessing('快速生成图片中...');
+            document.getElementById('quickDownloadBtn').classList.add('hidden');
+
+            try {
+                const canvas = await renderTableToCanvas();
 
                 canvas.toBlob((blob) => {
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = `${currentFileName || 'table'}.png`;
+                    link.download = `${currentFileName || 'table'}_quick.png`;
                     link.click();
                     URL.revokeObjectURL(url);
-                    
+
                     hideProcessing();
-                    document.getElementById('downloadBtn').classList.remove('hidden');
-                    
+                    document.getElementById('quickDownloadBtn').classList.remove('hidden');
+                    isProcessing = false;
+
                     showSuccess();
-                });
+                }, 'image/png', 0.8);
+
             } catch (err) {
                 hideProcessing();
-                document.getElementById('downloadBtn').classList.remove('hidden');
-                showError(translations[currentLang].error_generate);
+                document.getElementById('quickDownloadBtn').classList.remove('hidden');
+                isProcessing = false;
+                showError('快速生成失败，请尝试标准下载');
                 console.error(err);
             }
+        }
+
+        // 使用Canvas直接渲染表格 - 更快的方法
+        async function renderTableToCanvas() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            if (!excelData || excelData.length === 0) {
+                throw new Error('没有数据可渲染');
+            }
+
+            // 计算实际要渲染的行列数
+            const maxRowsToRender = showFullData ? excelData.length : Math.min(excelData.length, maxRows);
+            const maxColsToRender = showFullData ? (excelData[0]?.length || 0) : Math.min(excelData[0]?.length || 0, maxCols);
+
+            // 动态计算单元格大小
+            const cellWidth = Math.max(80, Math.min(120, 1000 / maxColsToRender));
+            const cellHeight = 25;
+            const padding = 6;
+
+            // 设置画布大小
+            canvas.width = maxColsToRender * cellWidth;
+            canvas.height = maxRowsToRender * cellHeight;
+
+            // 设置背景
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 设置字体
+            ctx.font = '11px Arial, sans-serif';
+            ctx.fillStyle = '#000000';
+            ctx.strokeStyle = '#dddddd';
+            ctx.lineWidth = 0.5;
+
+            // 渲染表格
+            for (let rowIndex = 0; rowIndex < maxRowsToRender; rowIndex++) {
+                const row = excelData[rowIndex];
+                if (!row) continue;
+
+                for (let colIndex = 0; colIndex < maxColsToRender; colIndex++) {
+                    const cell = row[colIndex];
+                    const x = colIndex * cellWidth;
+                    const y = rowIndex * cellHeight;
+
+                    // 绘制单元格边框
+                    ctx.strokeRect(x, y, cellWidth, cellHeight);
+
+                    // 绘制文本
+                    if (cell !== undefined && cell !== null) {
+                        const text = String(cell);
+                        const maxTextWidth = cellWidth - padding * 2;
+
+                        // 测量文本宽度并截断
+                        let displayText = text;
+                        while (ctx.measureText(displayText).width > maxTextWidth && displayText.length > 0) {
+                            displayText = displayText.substring(0, displayText.length - 1);
+                        }
+
+                        ctx.fillText(displayText, x + padding, y + cellHeight/2 + 4);
+                    }
+                }
+            }
+
+            return canvas;
+        }
+
+        function showDataInfo() {
+            const actualRows = excelData ? excelData.length : 0;
+            const actualCols = excelData && excelData[0] ? excelData[0].length : 0;
+            const displayRows = Math.min(actualRows, maxRows);
+            const displayCols = Math.min(actualCols, maxCols);
+
+            const infoMsg = document.createElement('div');
+            infoMsg.className = 'fixed top-4 left-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm';
+            infoMsg.innerHTML = `
+                <div class="font-medium">数据范围信息</div>
+                <div>原始数据: ${actualRows}行 × ${actualCols}列</div>
+                <div>显示范围: ${displayRows}行 × ${displayCols}列</div>
+                ${(actualRows > maxRows || actualCols > maxCols) ? '<div class="text-yellow-200">⚠️ 数据已被限制显示</div>' : ''}
+            `;
+            document.body.appendChild(infoMsg);
+            setTimeout(() => infoMsg.remove(), 5000);
         }
 
         function showSuccess() {
@@ -1175,9 +1666,94 @@
             excelData = null;
             merges = [];
             currentFileName = '';
+            isProcessing = false;
             document.getElementById('fileInput').value = '';
             document.getElementById('previewSection').classList.add('hidden');
             document.getElementById('downloadBtn').classList.add('hidden');
+            document.getElementById('quickDownloadBtn').classList.add('hidden');
+            document.getElementById('settingsBtn').classList.add('hidden');
+            document.getElementById('settingsPanel').classList.add('hidden');
+        }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                // 初始化设置值
+                document.getElementById('maxRowsInput').value = maxRows;
+                document.getElementById('maxColsInput').value = maxCols;
+                document.getElementById('qualitySelect').value = imageQuality;
+                document.getElementById('showFullDataCheck').checked = showFullData;
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+
+        function applySettings() {
+            const newMaxRows = parseInt(document.getElementById('maxRowsInput').value);
+            const newMaxCols = parseInt(document.getElementById('maxColsInput').value);
+            const newQuality = document.getElementById('qualitySelect').value;
+            const newShowFullData = document.getElementById('showFullDataCheck').checked;
+
+            if (newMaxRows >= 50 && newMaxRows <= 2000) {
+                maxRows = newMaxRows;
+            }
+            if (newMaxCols >= 10 && newMaxCols <= 100) {
+                maxCols = newMaxCols;
+            }
+            if (['fast', 'standard', 'high'].includes(newQuality)) {
+                imageQuality = newQuality;
+            }
+            showFullData = newShowFullData;
+
+            // 保存到本地存储
+            localStorage.setItem('excelConverter_maxRows', maxRows);
+            localStorage.setItem('excelConverter_maxCols', maxCols);
+            localStorage.setItem('excelConverter_quality', imageQuality);
+            localStorage.setItem('excelConverter_showFullData', showFullData);
+
+            showSuccess('设置已保存！如果已有数据，请重新上传文件以应用新设置。');
+            toggleSettings();
+        }
+
+        function resetSettings() {
+            maxRows = 500;
+            maxCols = 30;
+            imageQuality = 'standard';
+            showFullData = false;
+            document.getElementById('maxRowsInput').value = maxRows;
+            document.getElementById('maxColsInput').value = maxCols;
+            document.getElementById('qualitySelect').value = imageQuality;
+            document.getElementById('showFullDataCheck').checked = showFullData;
+
+            // 清除本地存储
+            localStorage.removeItem('excelConverter_maxRows');
+            localStorage.removeItem('excelConverter_maxCols');
+            localStorage.removeItem('excelConverter_quality');
+            localStorage.removeItem('excelConverter_showFullData');
+
+            showSuccess('设置已重置为默认值！');
+        }
+
+        // 初始化设置
+        function initializeSettings() {
+            const savedMaxRows = localStorage.getItem('excelConverter_maxRows');
+            const savedMaxCols = localStorage.getItem('excelConverter_maxCols');
+            const savedQuality = localStorage.getItem('excelConverter_quality');
+            const savedShowFullData = localStorage.getItem('excelConverter_showFullData');
+
+            if (savedMaxRows) {
+                maxRows = parseInt(savedMaxRows);
+            }
+            if (savedMaxCols) {
+                maxCols = parseInt(savedMaxCols);
+            }
+            if (savedQuality && ['fast', 'standard', 'high'].includes(savedQuality)) {
+                imageQuality = savedQuality;
+            }
+            if (savedShowFullData) {
+                showFullData = savedShowFullData === 'true';
+            }
         }
 
         function shareToSocial() {
