@@ -564,7 +564,36 @@
                 processing_generate: "正在生成图片...",
                 success_download: "图片下载成功!",
                 share_text: "推荐一个超好用的Excel转图片工具,免费在线使用!",
-                share_copied: "链接已复制到剪贴板,快去分享吧!"
+                share_copied: "链接已复制到剪贴板,快去分享吧!",
+                quick_download: "快速下载",
+                performance_settings: "性能设置",
+                settings_title: "性能设置",
+                max_rows_label: "最大行数限制",
+                max_cols_label: "最大列数限制",
+                image_quality_label: "图片质量",
+                quality_fast: "快速模式 (1x)",
+                quality_standard: "标准模式 (1.5x)",
+                quality_high: "高质量 (2x)",
+                show_full_data: "显示完整数据（忽略行列限制）",
+                show_full_data_warning: "⚠️ 大文件可能导致性能问题",
+                max_rows_hint: "建议值：200-500行",
+                max_cols_hint: "建议值：20-50列",
+                quality_hint: "快速模式转换更快",
+                apply_settings: "应用设置",
+                reset_settings: "重置为默认值",
+                performance_tips: "性能优化建议",
+                tip_large_tables: "大型表格会自动限制显示范围以提高性能",
+                tip_split_data: "如需处理完整数据，建议先在Excel中分割表格",
+                tip_recommended_range: "推荐最大处理范围：500行 × 30列",
+                tip_fast_mode: "使用快速模式可大幅提升转换速度",
+                settings_saved: "设置已保存！如果已有数据，请重新上传文件以应用新设置。",
+                settings_reset: "设置已重置为默认值！",
+                select_sheet: "选择Sheet:",
+                download_all_sheets: "下载所有Sheet",
+                sheet_info: "第 {0} 个，共 {1} 个Sheet",
+                downloading_sheet: "正在下载Sheet: {0}",
+                all_sheets_downloaded: "所有Sheet下载完成！",
+                multiple_sheets_detected: "检测到多个Sheet（共{0}个）。您可以切换Sheet查看或一次性下载所有Sheet。"
             },
             'zh-TW': {
                 app_title: "Excel轉圖片工具",
@@ -635,7 +664,13 @@
                 tip_large_tables: "大型表格會自動限制顯示範圍以提高效能",
                 tip_split_data: "如需處理完整資料，建議先在Excel中分割表格",
                 tip_recommended_range: "推薦最大處理範圍：500行 × 30列",
-                tip_fast_mode: "使用快速模式可大幅提升轉換速度"
+                tip_fast_mode: "使用快速模式可大幅提升轉換速度",
+                select_sheet: "選擇Sheet:",
+                download_all_sheets: "下載所有Sheet",
+                sheet_info: "第 {0} 個，共 {1} 個Sheet",
+                downloading_sheet: "正在下載Sheet: {0}",
+                all_sheets_downloaded: "所有Sheet下載完成！",
+                multiple_sheets_detected: "檢測到多個Sheet（共{0}個）。您可以切換Sheet查看或一次性下載所有Sheet。"
             },
             es: {
                 app_title: "Convertidor de Excel a Imagen",
@@ -1431,7 +1466,14 @@
                 // 检测多Sheet并显示信息
                 if (allSheetNames.length > 1) {
                     console.log('Multiple sheets detected:', allSheetNames);
-                    const message = translations[currentLang].multiple_sheets_detected.replace('{0}', allSheetNames.length);
+
+                    // 安全地获取翻译文本
+                    const currentTranslations = translations[currentLang] || translations['en'];
+                    const messageTemplate = currentTranslations.multiple_sheets_detected ||
+                        "Multiple sheets detected ({0} sheets). You can switch between sheets or download all at once.";
+                    const message = messageTemplate.replace('{0}', allSheetNames.length);
+
+                    console.log('Showing warning message:', message);
                     showWarning(message);
 
                     // 显示Sheet选择器
