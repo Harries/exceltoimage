@@ -20,6 +20,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; }
@@ -122,7 +123,15 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
-                        <span>快速下载</span>
+                        <span data-i18n="quick_download">快速下载</span>
+                    </button>
+
+                    <button id="downloadAllSheetsBtn" onclick="downloadAllSheets()" class="hidden flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7h-4V3"></path>
+                        </svg>
+                        <span data-i18n="download_all_sheets">下载所有Sheet</span>
                     </button>
 
                     <button id="settingsBtn" onclick="toggleSettings()" class="hidden flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all">
@@ -130,7 +139,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        <span>性能设置</span>
+                        <span data-i18n="performance_settings">性能设置</span>
                     </button>
                 </div>
             </div>
@@ -139,7 +148,7 @@
         <!-- 性能设置面板 -->
         <div id="settingsPanel" class="hidden bg-white rounded-2xl shadow-2xl p-6 mb-8">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-800">性能设置</h3>
+                <h3 class="text-lg font-bold text-gray-800" data-i18n="settings_title">性能设置</h3>
                 <button onclick="toggleSettings()" class="text-gray-500 hover:text-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -149,41 +158,41 @@
 
             <div class="grid md:grid-cols-3 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">最大行数限制</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="max_rows_label">最大行数限制</label>
                     <input type="number" id="maxRowsInput" min="50" max="2000" step="50" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    <p class="text-xs text-gray-500 mt-1">建议值：200-500行</p>
+                    <p class="text-xs text-gray-500 mt-1" data-i18n="max_rows_hint">建议值：200-500行</p>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">最大列数限制</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="max_cols_label">最大列数限制</label>
                     <input type="number" id="maxColsInput" min="10" max="100" step="5" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    <p class="text-xs text-gray-500 mt-1">建议值：20-50列</p>
+                    <p class="text-xs text-gray-500 mt-1" data-i18n="max_cols_hint">建议值：20-50列</p>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">图片质量</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="image_quality_label">图片质量</label>
                     <select id="qualitySelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                        <option value="fast">快速模式 (1x)</option>
-                        <option value="standard" selected>标准模式 (1.5x)</option>
-                        <option value="high">高质量 (2x)</option>
+                        <option value="fast" data-i18n="quality_fast">快速模式 (1x)</option>
+                        <option value="standard" selected data-i18n="quality_standard">标准模式 (1.5x)</option>
+                        <option value="high" data-i18n="quality_high">高质量 (2x)</option>
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">快速模式转换更快</p>
+                    <p class="text-xs text-gray-500 mt-1" data-i18n="quality_hint">快速模式转换更快</p>
                 </div>
             </div>
 
             <div class="mt-4">
                 <label class="flex items-center gap-2">
                     <input type="checkbox" id="showFullDataCheck" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                    <span class="text-sm text-gray-700">显示完整数据（忽略行列限制）</span>
+                    <span class="text-sm text-gray-700" data-i18n="show_full_data">显示完整数据（忽略行列限制）</span>
                 </label>
-                <p class="text-xs text-gray-500 mt-1">⚠️ 大文件可能导致性能问题</p>
+                <p class="text-xs text-gray-500 mt-1" data-i18n="show_full_data_warning">⚠️ 大文件可能导致性能问题</p>
             </div>
 
             <div class="mt-6 flex gap-3">
-                <button onclick="applySettings()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                <button onclick="applySettings()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors" data-i18n="apply_settings">
                     应用设置
                 </button>
-                <button onclick="resetSettings()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                <button onclick="resetSettings()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors" data-i18n="reset_settings">
                     重置默认
                 </button>
             </div>
@@ -194,12 +203,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <div class="text-sm text-blue-700">
-                        <p class="font-medium mb-1">性能优化提示：</p>
+                        <p class="font-medium mb-1" data-i18n="performance_tips">性能优化提示：</p>
                         <ul class="list-disc list-inside space-y-1 text-xs">
-                            <li>大型表格会自动限制显示范围以提高性能</li>
-                            <li>如需处理完整数据，建议先在Excel中分割表格</li>
-                            <li>推荐最大处理范围：500行 × 30列</li>
-                            <li>使用快速模式可大幅提升转换速度</li>
+                            <li data-i18n="tip_large_tables">大型表格会自动限制显示范围以提高性能</li>
+                            <li data-i18n="tip_split_data">如需处理完整数据，建议先在Excel中分割表格</li>
+                            <li data-i18n="tip_recommended_range">推荐最大处理范围：500行 × 30列</li>
+                            <li data-i18n="tip_fast_mode">使用快速模式可大幅提升转换速度</li>
                         </ul>
                     </div>
                 </div>
@@ -214,7 +223,17 @@
                     </svg>
                     <span class="font-bold text-lg"><span data-i18n="preview">Preview</span>: <span id="fileName"></span></span>
                 </div>
-                <button onclick="resetUpload()" class="text-gray-500 hover:text-gray-700 text-sm font-medium" data-i18n="reset">Upload New</button>
+                <div class="flex items-center gap-4">
+                    <!-- Sheet选择器 -->
+                    <div id="sheetSelector" class="hidden flex items-center gap-3">
+                        <label class="text-sm font-medium text-gray-700" data-i18n="select_sheet">选择Sheet:</label>
+                        <select id="sheetSelect" onchange="switchSheet()" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                            <!-- Sheet选项将动态添加 -->
+                        </select>
+                        <span id="sheetInfo" class="text-xs text-gray-500"></span>
+                    </div>
+                    <button onclick="resetUpload()" class="text-gray-500 hover:text-gray-700 text-sm font-medium" data-i18n="reset">Upload New</button>
+                </div>
             </div>
 
             <div class="overflow-x-auto border border-gray-200 rounded-lg">
@@ -387,7 +406,36 @@
                 processing_generate: "Generating image...",
                 success_download: "Image downloaded successfully!",
                 share_text: "Check out this amazing Excel to Image converter tool!",
-                share_copied: "Link copied to clipboard!"
+                share_copied: "Link copied to clipboard!",
+                quick_download: "Quick Download",
+                performance_settings: "Performance Settings",
+                settings_title: "Performance Settings",
+                max_rows_label: "Max Rows Limit",
+                max_cols_label: "Max Columns Limit",
+                image_quality_label: "Image Quality",
+                quality_fast: "Fast Mode (1x)",
+                quality_standard: "Standard Mode (1.5x)",
+                quality_high: "High Quality (2x)",
+                show_full_data: "Show Full Data (ignore row/column limits)",
+                show_full_data_warning: "⚠️ Large files may cause performance issues",
+                max_rows_hint: "Recommended: 200-500 rows",
+                max_cols_hint: "Recommended: 20-50 columns",
+                quality_hint: "Fast mode converts faster",
+                apply_settings: "Apply Settings",
+                reset_settings: "Reset to Default",
+                performance_tips: "Performance Tips",
+                tip_large_tables: "Large tables will automatically limit display range to improve performance",
+                tip_split_data: "For complete data processing, recommend splitting tables in Excel first",
+                tip_recommended_range: "Recommended max processing range: 500 rows × 30 columns",
+                tip_fast_mode: "Use fast mode for significantly faster conversion speed",
+                settings_saved: "Settings saved! If you have data loaded, please re-upload the file to apply new settings.",
+                settings_reset: "Settings reset to default values!",
+                select_sheet: "Select Sheet:",
+                download_all_sheets: "Download All Sheets",
+                sheet_info: "Sheet {0} of {1}",
+                downloading_sheet: "Downloading sheet: {0}",
+                all_sheets_downloaded: "All sheets downloaded successfully!",
+                multiple_sheets_detected: "Multiple sheets detected ({0} sheets). You can switch between sheets or download all at once."
             },
             zh: {
                 app_title: "Excel转图片工具",
@@ -437,7 +485,36 @@
                 processing_generate: "正在生成图片...",
                 success_download: "图片下载成功!",
                 share_text: "推荐一个超好用的Excel转图片工具,免费在线使用!",
-                share_copied: "链接已复制到剪贴板,快去分享吧!"
+                share_copied: "链接已复制到剪贴板,快去分享吧!",
+                quick_download: "快速下载",
+                performance_settings: "性能设置",
+                settings_title: "性能设置",
+                max_rows_label: "最大行数限制",
+                max_cols_label: "最大列数限制",
+                image_quality_label: "图片质量",
+                quality_fast: "快速模式 (1x)",
+                quality_standard: "标准模式 (1.5x)",
+                quality_high: "高质量 (2x)",
+                show_full_data: "显示完整数据（忽略行列限制）",
+                show_full_data_warning: "⚠️ 大文件可能导致性能问题",
+                max_rows_hint: "建议值：200-500行",
+                max_cols_hint: "建议值：20-50列",
+                quality_hint: "快速模式转换更快",
+                apply_settings: "应用设置",
+                reset_settings: "重置为默认值",
+                performance_tips: "性能优化建议",
+                tip_large_tables: "大型表格会自动限制显示范围以提高性能",
+                tip_split_data: "如需处理完整数据，建议先在Excel中分割表格",
+                tip_recommended_range: "推荐最大处理范围：500行 × 30列",
+                tip_fast_mode: "使用快速模式可大幅提升转换速度",
+                settings_saved: "设置已保存！如果已有数据，请重新上传文件以应用新设置。",
+                settings_reset: "设置已重置为默认值！",
+                select_sheet: "选择Sheet:",
+                download_all_sheets: "下载所有Sheet",
+                sheet_info: "第 {0} 个，共 {1} 个Sheet",
+                downloading_sheet: "正在下载Sheet: {0}",
+                all_sheets_downloaded: "所有Sheet下载完成！",
+                multiple_sheets_detected: "检测到多个Sheet（共{0}个）。您可以切换Sheet查看或一次性下载所有Sheet。"
             },
             'zh-CN': {
                 app_title: "Excel转图片工具",
@@ -537,7 +614,28 @@
                 processing_generate: "正在產生圖片...",
                 success_download: "圖片下載成功！",
                 share_text: "推薦一個超好用的Excel轉圖片工具，免費線上使用！",
-                share_copied: "連結已複製到剪貼簿，快去分享吧！"
+                share_copied: "連結已複製到剪貼簿，快去分享吧！",
+                quick_download: "快速下載",
+                performance_settings: "效能設定",
+                settings_title: "效能設定",
+                max_rows_label: "最大行數限制",
+                max_cols_label: "最大列數限制",
+                image_quality_label: "圖片品質",
+                quality_fast: "快速模式 (1x)",
+                quality_standard: "標準模式 (1.5x)",
+                quality_high: "高品質 (2x)",
+                show_full_data: "顯示完整資料（忽略行列限制）",
+                show_full_data_warning: "⚠️ 大檔案可能導致效能問題",
+                max_rows_hint: "建議值：200-500行",
+                max_cols_hint: "建議值：20-50列",
+                quality_hint: "快速模式轉換更快",
+                apply_settings: "套用設定",
+                reset_settings: "重設為預設值",
+                performance_tips: "效能優化建議",
+                tip_large_tables: "大型表格會自動限制顯示範圍以提高效能",
+                tip_split_data: "如需處理完整資料，建議先在Excel中分割表格",
+                tip_recommended_range: "推薦最大處理範圍：500行 × 30列",
+                tip_fast_mode: "使用快速模式可大幅提升轉換速度"
             },
             es: {
                 app_title: "Convertidor de Excel a Imagen",
@@ -587,7 +685,28 @@
                 processing_generate: "Generando imagen...",
                 success_download: "¡Imagen descargada exitosamente!",
                 share_text: "¡Mira esta increíble herramienta de conversión de Excel a imagen!",
-                share_copied: "¡Enlace copiado al portapapeles!"
+                share_copied: "¡Enlace copiado al portapapeles!",
+                quick_download: "Descarga Rápida",
+                performance_settings: "Configuración de Rendimiento",
+                settings_title: "Configuración de Rendimiento",
+                max_rows_label: "Límite Máximo de Filas",
+                max_cols_label: "Límite Máximo de Columnas",
+                image_quality_label: "Calidad de Imagen",
+                quality_fast: "Modo Rápido (1x)",
+                quality_standard: "Modo Estándar (1.5x)",
+                quality_high: "Alta Calidad (2x)",
+                show_full_data: "Mostrar Datos Completos (ignorar límites de filas/columnas)",
+                show_full_data_warning: "⚠️ Archivos grandes pueden causar problemas de rendimiento",
+                max_rows_hint: "Recomendado: 200-500 filas",
+                max_cols_hint: "Recomendado: 20-50 columnas",
+                quality_hint: "El modo rápido convierte más rápido",
+                apply_settings: "Aplicar Configuración",
+                reset_settings: "Restablecer a Predeterminado",
+                performance_tips: "Consejos de Rendimiento",
+                tip_large_tables: "Las tablas grandes limitarán automáticamente el rango de visualización para mejorar el rendimiento",
+                tip_split_data: "Para procesar datos completos, se recomienda dividir las tablas en Excel primero",
+                tip_recommended_range: "Rango máximo de procesamiento recomendado: 500 filas × 30 columnas",
+                tip_fast_mode: "Usar modo rápido puede mejorar significativamente la velocidad de conversión"
             },
             fr: {
                 app_title: "Convertisseur Excel en Image",
@@ -637,7 +756,28 @@
                 processing_generate: "Génération de l'image...",
                 success_download: "Image téléchargée avec succès!",
                 share_text: "Découvrez cet incroyable outil de conversion Excel en image!",
-                share_copied: "Lien copié dans le presse-papiers!"
+                share_copied: "Lien copié dans le presse-papiers!",
+                quick_download: "Téléchargement Rapide",
+                performance_settings: "Paramètres de Performance",
+                settings_title: "Paramètres de Performance",
+                max_rows_label: "Limite Maximum de Lignes",
+                max_cols_label: "Limite Maximum de Colonnes",
+                image_quality_label: "Qualité d'Image",
+                quality_fast: "Mode Rapide (1x)",
+                quality_standard: "Mode Standard (1.5x)",
+                quality_high: "Haute Qualité (2x)",
+                show_full_data: "Afficher Toutes les Données (ignorer les limites)",
+                show_full_data_warning: "⚠️ Les gros fichiers peuvent causer des problèmes de performance",
+                max_rows_hint: "Recommandé: 200-500 lignes",
+                max_cols_hint: "Recommandé: 20-50 colonnes",
+                quality_hint: "Le mode rapide convertit plus vite",
+                apply_settings: "Appliquer les Paramètres",
+                reset_settings: "Réinitialiser par Défaut",
+                performance_tips: "Conseils de Performance",
+                tip_large_tables: "Les grandes tables limiteront automatiquement la plage d'affichage pour améliorer les performances",
+                tip_split_data: "Pour traiter des données complètes, il est recommandé de diviser les tables dans Excel d'abord",
+                tip_recommended_range: "Plage de traitement maximale recommandée: 500 lignes × 30 colonnes",
+                tip_fast_mode: "Utiliser le mode rapide peut considérablement améliorer la vitesse de conversion"
             },
             de: {
                 app_title: "Excel zu Bild Konverter",
@@ -687,7 +827,34 @@
                 processing_generate: "Bild wird generiert...",
                 success_download: "Bild erfolgreich heruntergeladen!",
                 share_text: "Schauen Sie sich dieses großartige Excel zu Bild Konverter-Tool an!",
-                share_copied: "Link in die Zwischenablage kopiert!"
+                share_copied: "Link in die Zwischenablage kopiert!",
+                quick_download: "Schneller Download",
+                performance_settings: "Leistungseinstellungen",
+                settings_title: "Leistungseinstellungen",
+                max_rows_label: "Maximale Zeilenbegrenzung",
+                max_cols_label: "Maximale Spaltenbegrenzung",
+                image_quality_label: "Bildqualität",
+                quality_fast: "Schneller Modus (1x)",
+                quality_standard: "Standard Modus (1.5x)",
+                quality_high: "Hohe Qualität (2x)",
+                show_full_data: "Vollständige Daten anzeigen (Zeilen-/Spaltenbegrenzungen ignorieren)",
+                show_full_data_warning: "⚠️ Große Dateien können Leistungsprobleme verursachen",
+                max_rows_hint: "Empfohlen: 200-500 Zeilen",
+                max_cols_hint: "Empfohlen: 20-50 Spalten",
+                quality_hint: "Schneller Modus konvertiert schneller",
+                apply_settings: "Einstellungen Anwenden",
+                reset_settings: "Auf Standard Zurücksetzen",
+                performance_tips: "Leistungstipps",
+                tip_large_tables: "Große Tabellen begrenzen automatisch den Anzeigebereich zur Leistungsverbesserung",
+                tip_split_data: "Für die Verarbeitung vollständiger Daten wird empfohlen, Tabellen zuerst in Excel zu teilen",
+                tip_recommended_range: "Empfohlener maximaler Verarbeitungsbereich: 500 Zeilen × 30 Spalten",
+                tip_fast_mode: "Die Verwendung des schnellen Modus kann die Konvertierungsgeschwindigkeit erheblich verbessern",
+                select_sheet: "Sheet auswählen:",
+                download_all_sheets: "Alle Sheets herunterladen",
+                sheet_info: "Sheet {0} von {1}",
+                downloading_sheet: "Lade Sheet herunter: {0}",
+                all_sheets_downloaded: "Alle Sheets erfolgreich heruntergeladen!",
+                multiple_sheets_detected: "Mehrere Sheets erkannt ({0} Sheets). Sie können zwischen Sheets wechseln oder alle auf einmal herunterladen."
             },
             ja: {
                 app_title: "Excel画像変換ツール",
@@ -1099,7 +1266,12 @@
         let maxRows = 500;  // 降低默认限制以提高速度
         let maxCols = 30;   // 降低默认限制以提高速度
         let imageQuality = 'standard'; // 图片质量：fast, standard, high
-        let showFullData = false; // 是否显示完整数据
+        let showFullData = false;
+
+        // 多Sheet支持变量
+        let workbookData = null;
+        let currentSheetIndex = 0;
+        let allSheetNames = []; // 是否显示完整数据
 
         function setLanguage(lang) {
             currentLang = lang;
@@ -1180,7 +1352,7 @@
 
             // 防止重复处理
             if (isProcessing) {
-                showError('正在处理中，请稍候...');
+                showError(translations[currentLang].processing_read || '正在处理中，请稍候...');
                 return;
             }
 
@@ -1194,13 +1366,84 @@
 
             try {
                 const data = await file.arrayBuffer();
-                const workbook = XLSX.read(data, {
-                    cellStyles: true,
-                    cellDates: true,
-                    cellNF: true
+
+                // 尝试多种解析选项来处理不同格式的Excel文件
+                let workbook;
+                const parseOptions = [
+                    // 选项1: 标准解析
+                    {
+                        cellStyles: true,
+                        cellDates: true,
+                        cellNF: true,
+                        type: 'array'
+                    },
+                    // 选项2: 不使用样式信息
+                    {
+                        cellDates: true,
+                        type: 'array',
+                        raw: false,
+                        codepage: 65001
+                    },
+                    // 选项3: 基本解析
+                    {
+                        type: 'array',
+                        raw: true
+                    },
+                    // 选项4: 二进制模式
+                    {
+                        type: 'binary'
+                    },
+                    // 选项5: 最简单模式
+                    {}
+                ];
+
+                let lastError = null;
+                for (let i = 0; i < parseOptions.length; i++) {
+                    try {
+                        console.log(`Trying parse option ${i + 1}:`, parseOptions[i]);
+                        workbook = XLSX.read(data, parseOptions[i]);
+                        console.log(`Parse option ${i + 1} succeeded`);
+                        break;
+                    } catch (error) {
+                        console.warn(`Parse option ${i + 1} failed:`, error);
+                        lastError = error;
+                        if (i === parseOptions.length - 1) {
+                            throw new Error(`所有解析选项都失败了。最后错误: ${error.message}`);
+                        }
+                    }
+                }
+
+                // 验证workbook是否有效
+                if (!workbook || !workbook.SheetNames || workbook.SheetNames.length === 0) {
+                    throw new Error('工作簿无效或没有工作表');
+                }
+
+                console.log('Workbook loaded successfully:', {
+                    sheetCount: workbook.SheetNames.length,
+                    sheetNames: workbook.SheetNames
                 });
 
+                // 保存workbook数据以支持多Sheet
+                workbookData = workbook;
+                allSheetNames = workbook.SheetNames;
+                currentSheetIndex = 0;
+
+                // 检测多Sheet并显示信息
+                if (allSheetNames.length > 1) {
+                    console.log('Multiple sheets detected:', allSheetNames);
+                    const message = translations[currentLang].multiple_sheets_detected.replace('{0}', allSheetNames.length);
+                    showWarning(message);
+
+                    // 显示Sheet选择器
+                    setupSheetSelector();
+                }
+
                 const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+
+                // 验证第一个工作表是否有效
+                if (!firstSheet) {
+                    throw new Error(`无法访问工作表: ${workbook.SheetNames[0]}`);
+                }
 
                 // 获取工作表范围
                 const range = XLSX.utils.decode_range(firstSheet['!ref'] || 'A1');
@@ -1246,6 +1489,11 @@
                     document.getElementById('downloadBtn').classList.remove('hidden');
                     document.getElementById('quickDownloadBtn').classList.remove('hidden');
                     document.getElementById('settingsBtn').classList.remove('hidden');
+
+                    // 如果有多个Sheet，显示下载所有Sheet按钮
+                    if (allSheetNames.length > 1) {
+                        document.getElementById('downloadAllSheetsBtn').classList.remove('hidden');
+                    }
 
                     // 显示数据范围信息
                     showDataInfo();
@@ -1363,7 +1611,7 @@
             if (!table) return;
 
             if (isProcessing) {
-                showError('正在处理中，请稍候...');
+                showError(translations[currentLang].processing_generate || '正在处理中，请稍候...');
                 return;
             }
 
@@ -1452,6 +1700,15 @@
                     progressBar.style.width = '100%';
                     progressText.textContent = '100%';
 
+                    if (!blob) {
+                        hideProcessing();
+                        progressContainer.classList.add('hidden');
+                        document.getElementById('downloadBtn').classList.remove('hidden');
+                        isProcessing = false;
+                        showError(translations[currentLang].error_generate);
+                        return;
+                    }
+
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
@@ -1537,18 +1794,28 @@
         // 快速下载功能 - 使用Canvas直接渲染
         async function quickDownload() {
             if (isProcessing) {
-                showError('正在处理中，请稍候...');
+                showError(translations[currentLang].processing_generate || '正在处理中，请稍候...');
                 return;
             }
 
             isProcessing = true;
-            showProcessing('快速生成图片中...');
+            showProcessing(translations[currentLang].processing_generate || '快速生成图片中...');
             document.getElementById('quickDownloadBtn').classList.add('hidden');
 
             try {
                 const canvas = await renderTableToCanvas();
 
                 canvas.toBlob((blob) => {
+                    console.log('Canvas toBlob result:', blob);
+                    if (!blob) {
+                        console.error('Canvas toBlob returned null');
+                        hideProcessing();
+                        document.getElementById('quickDownloadBtn').classList.remove('hidden');
+                        isProcessing = false;
+                        showError(translations[currentLang].error_generate);
+                        return;
+                    }
+
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
@@ -1567,7 +1834,7 @@
                 hideProcessing();
                 document.getElementById('quickDownloadBtn').classList.remove('hidden');
                 isProcessing = false;
-                showError('快速生成失败，请尝试标准下载');
+                showError(translations[currentLang].error_generate || '快速生成失败，请尝试标准下载');
                 console.error(err);
             }
         }
@@ -1581,18 +1848,63 @@
                 throw new Error('没有数据可渲染');
             }
 
+            console.log('Rendering canvas with data:', {
+                rows: excelData.length,
+                cols: excelData[0]?.length || 0,
+                maxRows,
+                maxCols,
+                showFullData
+            });
+
             // 计算实际要渲染的行列数
-            const maxRowsToRender = showFullData ? excelData.length : Math.min(excelData.length, maxRows);
-            const maxColsToRender = showFullData ? (excelData[0]?.length || 0) : Math.min(excelData[0]?.length || 0, maxCols);
+            const actualCols = excelData[0]?.length || 0;
+            const actualRows = excelData.length;
+
+            // 强制限制最大渲染范围，即使在showFullData模式下也要考虑canvas限制
+            const maxCanvasWidth = 16000; // 安全的canvas宽度限制
+            const maxCanvasHeight = 16000; // 安全的canvas高度限制
+
+            let maxRowsToRender, maxColsToRender;
+
+            if (showFullData) {
+                // 即使显示完整数据，也要确保canvas尺寸合理
+                const tempCellWidth = 80;
+                const tempCellHeight = 25;
+
+                maxColsToRender = Math.min(actualCols, Math.floor(maxCanvasWidth / tempCellWidth));
+                maxRowsToRender = Math.min(actualRows, Math.floor(maxCanvasHeight / tempCellHeight));
+
+                if (maxColsToRender < actualCols || maxRowsToRender < actualRows) {
+                    console.warn(`数据过大，自动限制为 ${maxRowsToRender}行 × ${maxColsToRender}列`);
+
+                    // 显示用户友好的警告
+                    const warningMsg = document.createElement('div');
+                    warningMsg.className = 'fixed top-4 right-4 bg-yellow-500 text-white px-4 py-3 rounded-lg shadow-lg z-50 max-w-sm';
+                    warningMsg.innerHTML = `
+                        <div class="font-medium">⚠️ 数据范围已自动调整</div>
+                        <div class="text-sm mt-1">原始: ${actualRows}行 × ${actualCols}列</div>
+                        <div class="text-sm">渲染: ${maxRowsToRender}行 × ${maxColsToRender}列</div>
+                        <div class="text-xs mt-2">如需完整数据，请在设置中关闭"显示完整数据"并调整限制</div>
+                    `;
+                    document.body.appendChild(warningMsg);
+                    setTimeout(() => warningMsg.remove(), 8000);
+                }
+            } else {
+                maxRowsToRender = Math.min(actualRows, maxRows);
+                maxColsToRender = Math.min(actualCols, maxCols);
+            }
 
             // 动态计算单元格大小
-            const cellWidth = Math.max(80, Math.min(120, 1000 / maxColsToRender));
+            const cellWidth = Math.max(60, Math.min(120, maxCanvasWidth / maxColsToRender));
             const cellHeight = 25;
             const padding = 6;
 
             // 设置画布大小
-            canvas.width = maxColsToRender * cellWidth;
-            canvas.height = maxRowsToRender * cellHeight;
+            canvas.width = Math.ceil(maxColsToRender * cellWidth);
+            canvas.height = Math.ceil(maxRowsToRender * cellHeight);
+
+            console.log('Canvas size:', canvas.width, 'x', canvas.height);
+            console.log('Rendering:', maxRowsToRender, 'rows ×', maxColsToRender, 'cols');
 
             // 设置背景
             ctx.fillStyle = '#ffffff';
@@ -1636,6 +1948,144 @@
             return canvas;
         }
 
+        // 设置Sheet选择器
+        function setupSheetSelector() {
+            try {
+                const selector = document.getElementById('sheetSelector');
+                const select = document.getElementById('sheetSelect');
+                const info = document.getElementById('sheetInfo');
+
+                if (!selector || !select || !info) {
+                    console.error('Sheet selector elements not found');
+                    return;
+                }
+
+                if (!allSheetNames || allSheetNames.length === 0) {
+                    console.error('No sheet names available');
+                    return;
+                }
+
+                // 清空现有选项
+                select.innerHTML = '';
+
+                // 添加所有Sheet选项
+                allSheetNames.forEach((sheetName, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = sheetName || `Sheet ${index + 1}`;
+                    if (index === currentSheetIndex) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+
+                // 更新信息显示
+                updateSheetInfo();
+
+                // 显示选择器
+                selector.classList.remove('hidden');
+
+                console.log('Sheet selector setup completed');
+            } catch (error) {
+                console.error('Error setting up sheet selector:', error);
+            }
+        }
+
+        // 更新Sheet信息显示
+        function updateSheetInfo() {
+            const info = document.getElementById('sheetInfo');
+            if (allSheetNames.length > 1) {
+                const text = translations[currentLang].sheet_info
+                    .replace('{0}', currentSheetIndex + 1)
+                    .replace('{1}', allSheetNames.length);
+                info.textContent = text;
+            }
+        }
+
+        // 切换Sheet
+        function switchSheet() {
+            const select = document.getElementById('sheetSelect');
+            const newIndex = parseInt(select.value);
+
+            if (newIndex !== currentSheetIndex && workbookData) {
+                currentSheetIndex = newIndex;
+                loadSheetData(currentSheetIndex);
+                updateSheetInfo();
+            }
+        }
+
+        // 加载指定Sheet的数据
+        function loadSheetData(sheetIndex) {
+            try {
+                if (!workbookData) {
+                    console.error('No workbook data available');
+                    return;
+                }
+
+                if (!allSheetNames || !allSheetNames[sheetIndex]) {
+                    console.error('Invalid sheet index:', sheetIndex);
+                    return;
+                }
+
+                const sheetName = allSheetNames[sheetIndex];
+                const sheet = workbookData.Sheets[sheetName];
+
+                if (!sheet) {
+                    console.error('Sheet not found:', sheetName);
+                    showError(`无法找到工作表: ${sheetName}`);
+                    return;
+                }
+
+                console.log('Loading sheet:', sheetName);
+
+                // 检查工作表是否有数据
+                const range = XLSX.utils.decode_range(sheet['!ref'] || 'A1');
+
+                // 根据设置决定是否限制数据范围
+                const limitedRange = showFullData ? range : {
+                    s: { r: 0, c: 0 },
+                    e: {
+                        r: Math.min(range.e.r, maxRows - 1),
+                        c: Math.min(range.e.c, maxCols - 1)
+                    }
+                };
+
+                // 读取数据
+                excelData = XLSX.utils.sheet_to_json(sheet, {
+                    header: 1,
+                    defval: '',
+                    raw: false,
+                    range: limitedRange
+                });
+
+                // 验证数据是否成功读取
+                if (!excelData || excelData.length === 0) {
+                    console.warn('No data found in sheet:', sheetName);
+                    excelData = [['(空工作表)']];
+                }
+
+                // 过滤合并单元格信息
+                merges = (sheet['!merges'] || []).filter(merge =>
+                    merge.s.r < maxRows && merge.s.c < maxCols &&
+                    merge.e.r < maxRows && merge.e.c < maxCols
+                );
+
+                console.log('Sheet data loaded successfully:', {
+                    rows: excelData.length,
+                    cols: excelData[0]?.length || 0,
+                    merges: merges.length
+                });
+
+                // 重新渲染预览
+                renderPreview();
+                showDataInfo();
+
+            } catch (error) {
+                console.error('Error loading sheet data:', error);
+                showError(`加载工作表数据失败: ${error.message}`);
+            }
+        }
+
         function showDataInfo() {
             const actualRows = excelData ? excelData.length : 0;
             const actualCols = excelData && excelData[0] ? excelData[0].length : 0;
@@ -1654,12 +2104,118 @@
             setTimeout(() => infoMsg.remove(), 5000);
         }
 
-        function showSuccess() {
+        function showSuccess(message) {
             const successMsg = document.createElement('div');
             successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2';
-            successMsg.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>${translations[currentLang].success_download}</span>`;
+            const text = message || translations[currentLang].success_download;
+            successMsg.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>${text}</span>`;
             document.body.appendChild(successMsg);
             setTimeout(() => successMsg.remove(), 3000);
+        }
+
+        // 下载所有Sheet
+        async function downloadAllSheets() {
+            if (!workbookData || allSheetNames.length <= 1) {
+                showError('没有多个Sheet可下载');
+                return;
+            }
+
+            if (isProcessing) {
+                showError(translations[currentLang].processing_generate || '正在处理中，请稍候...');
+                return;
+            }
+
+            isProcessing = true;
+            const originalSheetIndex = currentSheetIndex;
+
+            try {
+                showProcessing('准备下载所有Sheet...');
+
+                // 创建一个ZIP文件来包含所有图片
+                const JSZip = window.JSZip || null;
+                let zip = null;
+
+                if (JSZip) {
+                    zip = new JSZip();
+                }
+
+                const downloadPromises = [];
+
+                for (let i = 0; i < allSheetNames.length; i++) {
+                    const sheetName = allSheetNames[i];
+                    showProcessing(translations[currentLang].downloading_sheet.replace('{0}', sheetName));
+
+                    // 切换到当前Sheet
+                    currentSheetIndex = i;
+                    loadSheetData(i);
+
+                    // 等待一小段时间确保数据加载完成
+                    await new Promise(resolve => setTimeout(resolve, 100));
+
+                    try {
+                        const canvas = await renderTableToCanvas();
+
+                        if (zip) {
+                            // 如果有JSZip，添加到ZIP文件
+                            const blob = await new Promise(resolve => {
+                                canvas.toBlob(resolve, 'image/png', 0.8);
+                            });
+                            if (blob) {
+                                zip.file(`${sheetName}.png`, blob);
+                            }
+                        } else {
+                            // 否则直接下载每个文件
+                            const blob = await new Promise(resolve => {
+                                canvas.toBlob(resolve, 'image/png', 0.8);
+                            });
+                            if (blob) {
+                                const url = URL.createObjectURL(blob);
+                                const link = document.createElement('a');
+                                link.href = url;
+                                link.download = `${currentFileName || 'sheet'}_${sheetName}.png`;
+                                link.click();
+                                URL.revokeObjectURL(url);
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`Error downloading sheet ${sheetName}:`, error);
+                    }
+
+                    // 添加延迟避免浏览器阻塞
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+
+                if (zip) {
+                    // 生成并下载ZIP文件
+                    showProcessing('正在打包文件...');
+                    const zipBlob = await zip.generateAsync({type: 'blob'});
+                    const url = URL.createObjectURL(zipBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${currentFileName || 'excel'}_all_sheets.zip`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                }
+
+                // 恢复原始Sheet
+                currentSheetIndex = originalSheetIndex;
+                loadSheetData(originalSheetIndex);
+
+                hideProcessing();
+                isProcessing = false;
+                showSuccess(translations[currentLang].all_sheets_downloaded);
+
+            } catch (error) {
+                console.error('Error downloading all sheets:', error);
+                hideProcessing();
+                isProcessing = false;
+
+                // 恢复原始Sheet
+                currentSheetIndex = originalSheetIndex;
+                loadSheetData(originalSheetIndex);
+
+                showError(translations[currentLang].error_generate);
+            }
         }
 
         function resetUpload() {
@@ -1667,12 +2223,20 @@
             merges = [];
             currentFileName = '';
             isProcessing = false;
+
+            // 清理多Sheet相关数据
+            workbookData = null;
+            currentSheetIndex = 0;
+            allSheetNames = [];
+
             document.getElementById('fileInput').value = '';
             document.getElementById('previewSection').classList.add('hidden');
             document.getElementById('downloadBtn').classList.add('hidden');
             document.getElementById('quickDownloadBtn').classList.add('hidden');
+            document.getElementById('downloadAllSheetsBtn').classList.add('hidden');
             document.getElementById('settingsBtn').classList.add('hidden');
             document.getElementById('settingsPanel').classList.add('hidden');
+            document.getElementById('sheetSelector').classList.add('hidden');
         }
 
         function toggleSettings() {
@@ -1712,7 +2276,7 @@
             localStorage.setItem('excelConverter_quality', imageQuality);
             localStorage.setItem('excelConverter_showFullData', showFullData);
 
-            showSuccess('设置已保存！如果已有数据，请重新上传文件以应用新设置。');
+            showSuccess(translations[currentLang].settings_saved);
             toggleSettings();
         }
 
@@ -1732,7 +2296,7 @@
             localStorage.removeItem('excelConverter_quality');
             localStorage.removeItem('excelConverter_showFullData');
 
-            showSuccess('设置已重置为默认值！');
+            showSuccess(translations[currentLang].settings_reset);
         }
 
         // 初始化设置
